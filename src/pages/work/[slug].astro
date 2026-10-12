@@ -42,9 +42,15 @@ const details: [string, string][] = [
         <h1>{project.brand}</h1>
         <p class="subtitle">{project.title}</p>
       </div>
-      <a class="play" href="#watch" aria-label="Jump to the video">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" /></svg>
-      </a>
+      {
+        project.mainVideo && (
+          <a class="play" href="#watch" aria-label="Jump to the video">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5.5v13l10.5-6.5z" />
+            </svg>
+          </a>
+        )
+      }
     </div>
   </section>
 
@@ -66,12 +72,16 @@ const details: [string, string][] = [
     </div>
   </section>
 
-  <section id="watch" class="watch wrap" aria-label="Main video">
-    <p class="label">./watch</p>
-    <div class:list={['main', { wide: project.mainVideo && !/instagram|tiktok|shorts/.test(project.mainVideo) }]}>
-      <SocialEmbed url={project.mainVideo} title={`${project.client} — ${project.title}`} />
-    </div>
-  </section>
+  {
+    project.mainVideo && (
+      <section id="watch" class="watch wrap" aria-label="Main video">
+        <p class="label">./watch</p>
+        <div class:list={['main', { wide: !/instagram|tiktok|shorts/.test(project.mainVideo) }]}>
+          <SocialEmbed url={project.mainVideo} title={`${project.client} — ${project.title}`} />
+        </div>
+      </section>
+    )
+  }
 
   {
     project.reels.length > 0 && (

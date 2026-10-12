@@ -1,0 +1,73 @@
+---
+interface Props {
+  items: string[];
+}
+const { items } = Astro.props;
+---
+
+<div class="marquee" role="marquee" aria-label={`Brands: ${items.join(', ')}`}>
+  <div class="track">
+    {
+      [0, 1].map((copy) => (
+        <ul class="row" aria-hidden="true">
+          {items.map((item) => (
+            <li>
+              <span class="h-display">{item}</span>
+              <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 0c.7 6.4 5.6 11.3 12 12-6.4.7-11.3 5.6-12 12-.7-6.4-5.6-11.3-12-12C6.4 11.3 11.3 6.4 12 0z" />
+              </svg>
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    padding-block: 18px;
+    border-block: 1px solid var(--line);
+    background: rgba(10, 28, 22, 0.55);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .track {
+    display: flex;
+    width: max-content;
+    animation: scroll 40s linear infinite;
+  }
+  .marquee:hover .track {
+    animation-play-state: paused;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .h-display {
+    font-size: clamp(28px, 6vw, 46px);
+    line-height: 1;
+    padding-bottom: 0.08em;
+    color: var(--cream);
+  }
+  .star {
+    width: clamp(16px, 2.6vw, 24px);
+    height: auto;
+    margin-inline: clamp(18px, 3vw, 36px);
+    fill: var(--accent);
+  }
+  @keyframes scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

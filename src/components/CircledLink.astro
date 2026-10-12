@@ -1,0 +1,65 @@
+---
+// Handwritten link with a hand-drawn oval around it.
+interface Props {
+  href: string;
+  label: string;
+  seed?: number;
+}
+const { href, label, seed = 0 } = Astro.props;
+
+// Slightly different wobble per link so they don't look stamped.
+const paths = [
+  'M8 30 C 8 10, 60 4, 104 6 C 150 8, 194 14, 192 31 C 190 50, 140 56, 96 55 C 48 54, 6 48, 9 28 C 10 20, 22 14, 34 11',
+  'M10 28 C 12 9, 70 5, 110 6 C 156 7, 192 16, 190 32 C 188 50, 132 57, 90 55 C 44 53, 8 46, 10 27 C 12 17, 30 12, 44 9',
+  'M7 31 C 9 11, 58 3, 100 5 C 148 7, 193 13, 193 30 C 193 49, 146 57, 100 56 C 52 55, 5 50, 8 29 C 9 21, 18 15, 30 12',
+];
+const d = paths[seed % paths.length];
+---
+
+<a class="circled hand" href={href}>
+  <svg viewBox="0 0 200 62" preserveAspectRatio="none" aria-hidden="true">
+    <path d={d} pathLength="1"></path>
+  </svg>
+  <span>{label}</span>
+</a>
+
+<style>
+  .circled {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    min-width: 124px;
+    min-height: 48px;
+    padding: 6px 22px 10px;
+    font-size: clamp(22px, 5.6vw, 26px);
+    line-height: 1;
+    color: var(--cream);
+  }
+  svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  .circled:hover {
+    color: var(--accent);
+  }
+  .circled:hover path {
+    animation: redraw 0.6s ease-out;
+  }
+  @keyframes redraw {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+</style>

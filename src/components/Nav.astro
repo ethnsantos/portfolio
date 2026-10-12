@@ -1,0 +1,94 @@
+---
+import { bookingHref } from '../data/site';
+
+interface Props {
+  variant?: 'home' | 'project';
+}
+const { variant = 'home' } = Astro.props;
+---
+
+<header class:list={['nav', variant]}>
+  <a href="/" class="logo mono" aria-label="Ethan Santos, home">
+    Ethan Santos <span class="rec"><span class="dot" aria-hidden="true"></span>REC</span>
+  </a>
+  <nav aria-label="Main">
+    {
+      variant === 'home' ? (
+        <>
+          <a href="/#work">./work</a>
+          <a href="/#brands" class="hide-sm">./brands</a>
+          <a href="/#about" class="hide-sm">./about</a>
+        </>
+      ) : (
+        <a href="/#work">← ./work</a>
+      )
+    }
+    <a href={bookingHref} class="cta">./book-a-shoot ↗</a>
+  </nav>
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    height: var(--nav-h);
+    padding-top: env(safe-area-inset-top);
+    padding-inline: var(--gutter);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: linear-gradient(to bottom, rgba(14, 36, 29, 0.92), rgba(14, 36, 29, 0.6));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(150, 225, 185, 0.08);
+  }
+  .logo {
+    font-weight: 500;
+    font-size: 10.5px;
+    white-space: nowrap;
+  }
+  .rec {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-left: 4px;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cream);
+    animation: blink 1.6s steps(1) infinite;
+  }
+  @keyframes blink {
+    50% {
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2.4vw, 22px);
+    font-family: var(--f-mono);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  nav a {
+    padding-block: 14px;
+    transition: color 0.2s;
+  }
+  nav a:hover {
+    color: var(--accent);
+  }
+  .cta {
+    color: var(--accent);
+  }
+  @media (max-width: 560px) {
+    .hide-sm {
+      display: none;
+    }
+  }
+</style>

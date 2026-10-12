@@ -1,0 +1,292 @@
+---
+import Base from '../layouts/Base.astro';
+import Polaroid from '../components/Polaroid.astro';
+import FilmStrip from '../components/FilmStrip.astro';
+import LightLeak from '../components/LightLeak.astro';
+import CircledLink from '../components/CircledLink.astro';
+import Marquee from '../components/Marquee.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { projects, pad, yearRange } from '../data/projects';
+import { site, bookingHref } from '../data/site';
+
+const range = yearRange();
+---
+
+<Base>
+  <link slot="head" rel="preload" as="image" href={site.photo.src} imagesrcset={`${site.photo.srcSmall} 480w, ${site.photo.src} 800w`} imagesizes="(max-width: 600px) 64vw, 300px" />
+
+  <!-- HERO -->
+  <section class="hero">
+    <LightLeak variant="hero" />
+    <FilmStrip class="hero-strip" />
+    <div class="hero-inner wrap">
+      <Polaroid
+        src={site.photo.src}
+        srcSmall={site.photo.srcSmall}
+        alt={site.photo.alt}
+        caption={site.heroCaption}
+        tilt={-4}
+        eager
+      />
+      <p class="label eyebrow">{site.eyebrow}</p>
+      <h1 class="name">{site.name.toLowerCase()}</h1>
+      <p class="tagline">{site.tagline}</p>
+      <div class="links">
+        <CircledLink href="#work" label="projects" seed={0} />
+        <CircledLink href="#brands" label="brands" seed={1} />
+        <CircledLink href="#contact" label="say hi" seed={2} />
+      </div>
+    </div>
+  </section>
+
+  <!-- BRANDS -->
+  <section id="brands" aria-label="Brands I've worked with">
+    <Marquee items={projects.map((p) => p.brand)} />
+  </section>
+
+  <!-- WORK -->
+  <section id="work" class="work wrap">
+    <div class="work-head">
+      <h2>
+        <svg class="folder" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4.6l2 2.2h8.4A1.5 1.5 0 0 1 21 8.7v9.8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z" />
+        </svg>
+        selected work
+      </h2>
+      <p class="mono count">{pad(projects.length)} projects{range && ` · ${range}`}</p>
+    </div>
+    <div class="grid">
+      {projects.map((project, i) => <ProjectCard project={project} index={i} />)}
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="about">
+    <LightLeak variant="about" />
+    <FilmStrip />
+    <div class="about-inner wrap">
+      <Polaroid
+        src={site.photo.src}
+        srcSmall={site.photo.srcSmall}
+        alt={site.photo.alt}
+        caption={site.aboutCaption}
+        tilt={-5}
+        class="about-photo"
+      />
+      <div class="about-copy">
+        <p class="label">./about</p>
+        <h2>{site.about.heading}</h2>
+        {site.about.paragraphs.map((p) => <p class="body">{p}</p>)}
+        <p class="pill mono"><span class="pill-dot" aria-hidden="true"></span>{site.about.featured}</p>
+      </div>
+    </div>
+    <FilmStrip />
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact wrap">
+    <p class="hand kicker">got a project?</p>
+    <h2>let's make<br />something.</h2>
+    <a class="btn" href={bookingHref}>Book a shoot <span aria-hidden="true">↗</span></a>
+    <ul class="socials mono">
+      <li><a href={site.instagram.url} target="_blank" rel="noopener">Instagram {site.instagram.handle}</a></li>
+      <li><a href={site.tiktok.url} target="_blank" rel="noopener">TikTok {site.tiktok.handle}</a></li>
+      <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+    </ul>
+  </section>
+</Base>
+
+<style>
+  /* HERO */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-top: calc(var(--nav-h) + env(safe-area-inset-top));
+  }
+  .hero-strip {
+    position: relative;
+    z-index: 1;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-block: clamp(36px, 6vw, 56px) clamp(56px, 9vw, 96px);
+  }
+  .eyebrow {
+    margin: clamp(32px, 5vw, 44px) 0 0;
+    font-size: 10px;
+  }
+  .name {
+    margin-top: 14px;
+    font-size: clamp(56px, 13.5vw, 148px);
+    line-height: 0.82;
+    padding-bottom: 0.08em;
+  }
+  .tagline {
+    max-width: 30em;
+    margin: clamp(16px, 2.5vw, 24px) 0 0;
+    font-size: clamp(15px, 1.8vw, 17px);
+    color: var(--cream-dim);
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 14px;
+    margin-top: clamp(24px, 4vw, 36px);
+  }
+
+  /* WORK */
+  .work {
+    padding-block: clamp(64px, 9vw, 110px) clamp(48px, 7vw, 80px);
+  }
+  .work-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 8px 24px;
+    margin-bottom: clamp(24px, 4vw, 40px);
+  }
+  .work-head h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+    font-size: clamp(40px, 6vw, 58px);
+  }
+  .folder {
+    width: 0.62em;
+    height: 0.62em;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+    margin-top: 0.08em;
+  }
+  .count {
+    margin: 0;
+    font-size: 9px;
+    color: var(--cream-faint);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(28px, 3.5vw, 40px) clamp(16px, 2vw, 22px);
+  }
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 560px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ABOUT */
+  .about {
+    position: relative;
+    overflow: hidden;
+  }
+  .about :global(.filmstrip) {
+    position: relative;
+    z-index: 1;
+  }
+  .about-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: clamp(32px, 6vw, 72px);
+    padding-block: clamp(56px, 8vw, 96px);
+  }
+  .about-inner :global(.about-photo) {
+    width: min(260px, 62vw);
+  }
+  .about-copy h2 {
+    margin-top: 12px;
+    font-size: clamp(34px, 5vw, 52px);
+    line-height: 0.95;
+  }
+  .body {
+    max-width: 34em;
+    margin: 18px 0 0;
+    font-size: clamp(14.5px, 1.6vw, 16px);
+    color: var(--cream-dim);
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 24px 0 0;
+    padding: 9px 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(10, 28, 22, 0.6);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+  .pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+  @media (max-width: 760px) {
+    .about-inner {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+    }
+    .body {
+      margin-inline: auto;
+    }
+  }
+
+  /* CONTACT */
+  .contact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-block: clamp(88px, 14vw, 160px) clamp(48px, 8vw, 96px);
+  }
+  .kicker {
+    margin: 0;
+    color: var(--accent);
+    font-size: clamp(22px, 3vw, 26px);
+    transform: rotate(-4deg);
+  }
+  .contact h2 {
+    margin: 4px 0 clamp(28px, 4vw, 36px);
+    font-size: clamp(54px, 11vw, 112px);
+    line-height: 0.86;
+  }
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 28px;
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+  .socials a {
+    display: inline-block;
+    padding-block: 12px;
+  }
+  .socials a:hover {
+    color: var(--accent);
+  }
+</style>

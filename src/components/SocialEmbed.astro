@@ -1,0 +1,112 @@
+---
+// Instagram / TikTok / YouTube / Vimeo embed. Iframes are lazy-loaded by the
+// browser, so nothing heavy downloads until the visitor scrolls near it.
+import { toEmbed } from '../data/embeds';
+
+interface Props {
+  url?: string;
+  title: string;
+  /** Force portrait (reels) or landscape. Defaults to what the link implies. */
+  vertical?: boolean;
+}
+const { url, title, vertical } = Astro.props;
+const embed = url ? toEmbed(url) : undefined;
+const isVertical = vertical ?? embed?.vertical ?? true;
+const kind = embed?.kind ?? 'empty';
+---
+
+<div class:list={['embed', isVertical ? 'v' : 'h', kind]}>
+  {
+    embed && embed.kind !== 'link' ? (
+      <iframe
+        src={embed.src}
+        title={title}
+        loading="lazy"
+        allow="autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write"
+        allowfullscreen
+        referrerpolicy="strict-origin-when-cross-origin"
+        scrolling="no"
+      />
+    ) : embed ? (
+      <a class="fallback" href={embed.url} target="_blank" rel="noopener">
+        <span class="play" aria-hidden="true">▶</span>
+        <span class="mono">Watch {title} ↗</span>
+      </a>
+    ) : (
+      <div class="fallback">
+        <span class="placeholder-label">[ {isVertical ? 'reel' : 'video'} embed ]</span>
+      </div>
+    )
+  }
+</div>
+
+<script>
+  // Instagram's embed page reports its real height via postMessage
+  // (the same message its own embed.js listens for). Size each iframe to fit.
+  window.addEventListener('message', (e) => {
+    if (e.origin !== 'https://www.instagram.com' || typeof e.data !== 'string') return;
+    let msg: { type?: string; details?: { height?: number } };
+    try {
+      msg = JSON.parse(e.data);
+    } catch {
+      return;
+    }
+    const height = msg.details?.height;
+    if (msg.type !== 'MEASURE' || !height) return;
+    for (const frame of document.querySelectorAll<HTMLIFrameElement>('.embed.instagram iframe')) {
+      if (frame.contentWindow === e.source) {
+        frame.parentElement!.style.aspectRatio = 'auto';
+        frame.parentElement!.style.height = `${Math.ceil(height)}px`;
+      }
+    }
+  });
+</script>
+
+<style>
+  .embed {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: linear-gradient(160deg, #1b2a25, #101613);
+    border: 1px solid var(--line);
+  }
+  .v {
+    aspect-ratio: 9 / 16;
+  }
+  .v.instagram {
+    /* IG adds a header + caption bar around the video */
+    aspect-ratio: 9 / 16.6;
+  }
+  .h {
+    aspect-ratio: 16 / 9;
+  }
+  iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .fallback {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 14px;
+    text-align: center;
+    padding: 16px;
+  }
+  .play {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--cream);
+    color: var(--bg);
+    font-size: 16px;
+    padding-left: 3px;
+  }
+</style>

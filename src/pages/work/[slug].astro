@@ -19,7 +19,6 @@ interface Props {
 }
 const { project, index } = Astro.props;
 const next = projects[(index + 1) % projects.length];
-const reels = project.reels.length ? project.reels : [undefined, undefined, undefined];
 const details: [string, string][] = [
   ['Client', project.client],
   ['My role', project.role.join(' · ')],
@@ -74,12 +73,18 @@ const details: [string, string][] = [
     </div>
   </section>
 
-  <section class="reels wrap" aria-label="Reels">
-    <p class="label">./reels</p>
-    <div class="reel-row">
-      {reels.map((url, i) => <SocialEmbed url={url} title={`${project.client} reel ${i + 1}`} vertical />)}
-    </div>
-  </section>
+  {
+    project.reels.length > 0 && (
+      <section class="reels wrap" aria-label="More reels">
+        <p class="label">./more-reels</p>
+        <div class="reel-row">
+          {project.reels.map((url, i) => (
+            <SocialEmbed url={url} title={`${project.client} reel ${i + 2}`} vertical />
+          ))}
+        </div>
+      </section>
+    )
+  }
 
   <FilmStrip />
   <a class="next wrap" href={`/work/${next.slug}`}>

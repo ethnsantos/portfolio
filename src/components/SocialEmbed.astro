@@ -40,6 +40,28 @@ const kind = embed?.kind ?? 'empty';
   }
 </div>
 
+<script>
+  // Instagram's embed page reports its real height via postMessage
+  // (the same message its own embed.js listens for). Size each iframe to fit.
+  window.addEventListener('message', (e) => {
+    if (e.origin !== 'https://www.instagram.com' || typeof e.data !== 'string') return;
+    let msg: { type?: string; details?: { height?: number } };
+    try {
+      msg = JSON.parse(e.data);
+    } catch {
+      return;
+    }
+    const height = msg.details?.height;
+    if (msg.type !== 'MEASURE' || !height) return;
+    for (const frame of document.querySelectorAll<HTMLIFrameElement>('.embed.instagram iframe')) {
+      if (frame.contentWindow === e.source) {
+        frame.parentElement!.style.aspectRatio = 'auto';
+        frame.parentElement!.style.height = `${Math.ceil(height)}px`;
+      }
+    }
+  });
+</script>
+
 <style>
   .embed {
     position: relative;
@@ -55,7 +77,6 @@ const kind = embed?.kind ?? 'empty';
   .v.instagram {
     /* IG adds a header + caption bar around the video */
     aspect-ratio: 9 / 16.6;
-    background: #fff;
   }
   .h {
     aspect-ratio: 16 / 9;

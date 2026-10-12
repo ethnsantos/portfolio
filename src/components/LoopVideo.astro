@@ -1,0 +1,82 @@
+---
+// Muted, looping background video. The file only downloads once it's on
+// screen, and never on Save-Data / reduced-motion — those visitors get the poster.
+interface Props {
+  src?: string;
+  poster?: string;
+  tint: string;
+}
+const { src, poster, tint } = Astro.props;
+---
+
+<div class="loop" style={`--tint:${tint}`}>
+  {
+    poster && (
+      <img class="poster" src={poster} alt="" fetchpriority="high" decoding="async" />
+    )
+  }
+  {
+    src ? (
+      <video data-src={src} poster={poster} muted loop playsinline preload="none" aria-hidden="true" />
+    ) : (
+      !poster && <span class="placeholder-label tag">[ full-screen looping video ]</span>
+    )
+  }
+</div>
+
+<script>
+  const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  const skip = conn?.saveData || matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLVideoElement>('.loop video[data-src]').forEach((video) => {
+    if (skip) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            if (!video.src) {
+              video.src = video.dataset.src!;
+              video.addEventListener('playing', () => video.classList.add('on'), { once: true });
+            }
+            video.play().catch(() => {});
+          } else if (video.src) {
+            video.pause();
+          }
+        }
+      },
+      { rootMargin: '100px' },
+    );
+    io.observe(video);
+  });
+</script>
+
+<style>
+  .loop {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 80% at 30% 0%, color-mix(in srgb, var(--tint) 100%, white 6%), transparent 70%),
+      linear-gradient(180deg, var(--tint), #111 92%);
+  }
+  .poster,
+  video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  video {
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  video:global(.on) {
+    opacity: 1;
+  }
+  .tag {
+    position: absolute;
+    top: calc(var(--nav-h) + 18px);
+    right: var(--gutter);
+  }
+</style>

@@ -1,0 +1,84 @@
+---
+import '@fontsource/bricolage-grotesque/400.css';
+import '@fontsource/bricolage-grotesque/600.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/caveat/700.css';
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  variant?: 'home' | 'project';
+}
+
+const { title = site.title, description = site.description, image = '/images/og.jpg', variant = 'home' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0E241D" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Adobe Fonts (Acumin Pro). Add your domains in the Adobe Fonts project settings. -->
+    <link rel="preconnect" href="https://use.typekit.net" crossorigin />
+    <link rel="preconnect" href="https://p.typekit.net" crossorigin />
+    <link rel="stylesheet" href="https://use.typekit.net/xii8bhd.css" />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Nav variant={variant} />
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="footer wrap mono">
+      <span>© {new Date().getFullYear()} {site.name}</span>
+      <span>Shot in the Bay Area</span>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .skip {
+    position: absolute;
+    left: 12px;
+    top: -60px;
+    z-index: 100;
+    padding: 10px 14px;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: var(--f-mono);
+    font-size: 12px;
+    border-radius: 6px;
+  }
+  .skip:focus {
+    top: 12px;
+  }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 40px calc(28px + env(safe-area-inset-bottom));
+    font-size: 9px;
+    color: var(--cream-faint);
+  }
+</style>

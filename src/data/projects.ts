@@ -54,6 +54,7 @@ export const projects: Project[] = [
     year: '2026',
     hook: 'Cinematic product and lifestyle content showing what both cameras can do in real-world shooting.',
     story: [],
+    thumbnail: '/projects/insta360/thumb.webp',
     tint: '#2a3238',
     mainVideo: 'https://www.instagram.com/reel/DchxIifB9eW/',
     reels: [
@@ -105,6 +106,7 @@ export const projects: Project[] = [
     year: '2026',
     hook: 'Weekly reels and photo sets that make skincare routines feel fresh, glowy and real, featuring rotating on-camera talent.',
     story: [],
+    thumbnail: '/projects/skincare-junkie/thumb.webp',
     tint: '#3a3322',
     mainVideo: 'https://www.instagram.com/p/DeNMlMou0D5/',
     reels: [],
@@ -120,6 +122,7 @@ export const projects: Project[] = [
     year: '2026',
     hook: "A cinematic look inside the studio, capturing the artist's process from first line to finished piece.",
     story: [],
+    thumbnail: '/projects/sashatattoo-essential/thumb.webp',
     tint: '#33262a',
     mainVideo: 'https://www.instagram.com/reel/Dc_qSiVy8iW/',
     reels: [
@@ -140,6 +143,7 @@ export const projects: Project[] = [
     year: '2026',
     hook: 'Directed the visual story behind the Framework II drop, from concept to behind-the-scenes content.',
     story: [],
+    thumbnail: '/projects/wyatt-clo/thumb.webp',
     tint: '#22283a',
     mainVideo: 'https://www.instagram.com/reel/DcMlW5cyXEU/',
     reels: [],
@@ -155,6 +159,7 @@ export const projects: Project[] = [
     year: '2026',
     hook: "Performance-driven visuals built to push the R&B duo's new single across social.",
     story: [],
+    thumbnail: '/projects/twinsoundz/thumb.webp',
     tint: '#1f3330',
     mainVideo: 'https://www.instagram.com/reel/Dd9gaIWTs9J/',
     reels: [

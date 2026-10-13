@@ -2,8 +2,10 @@
 //  ALL YOUR WORK LIVES HERE.
 //  To add a project: copy one entry, paste it where you want it
 //  in the list, and change the fields. Order here = order on
-//  the site (and the "next project" chain). Anything in
-//  [ BRACKETS ] is a placeholder waiting for your real text.
+//  the site (and the "next project" chain).
+//
+//  Clips: put them in public/projects/<slug>/ (see README for the
+//  ffmpeg commands) and point heroVideo / heroPoster / cardVideo at them.
 // ─────────────────────────────────────────────────────────────
 
 export interface Project {
@@ -26,13 +28,17 @@ export interface Project {
   story: string[];
   /** Optional Caveat note under the story, e.g. "fav shot is at 0:14". */
   note?: string;
+  /** Optional small label in the details column, e.g. "filmed by me · edited by …". */
+  credit?: string;
 
   /** Optional card image, e.g. '/projects/insta360/thumb.webp' (16:10). */
   thumbnail?: string;
-  /** Optional short silent loop for the full-screen hero (mp4, ~5–8s, 720p). */
+  /** Optional short silent loop for the full-screen hero (mp4, ~5–10s, 720p). */
   heroVideo?: string;
-  /** Optional still shown before / instead of the loop. */
+  /** Optional still shown before / instead of the loop. Falls back to the thumbnail. */
   heroPoster?: string;
+  /** Optional small 16:10 loop for the homepage card (plays on hover / in view). */
+  cardVideo?: string;
   /** Background tint used while there's no image/video yet. */
   tint: string;
 
@@ -40,6 +46,8 @@ export interface Project {
   mainVideo?: string;
   /** More vertical reels: Instagram or TikTok links. Leave empty to hide the section. */
   reels: string[];
+  /** Optional: videos grouped under headings (e.g. by artist) instead of one main video. */
+  videoGroups?: { title: string; videos: string[] }[];
 }
 
 export const projects: Project[] = [
@@ -107,6 +115,9 @@ export const projects: Project[] = [
     hook: 'Weekly reels and photo sets that make skincare routines feel fresh, glowy and real, featuring rotating on-camera talent.',
     story: [],
     thumbnail: '/projects/skincare-junkie/thumb.webp',
+    heroVideo: '/projects/skincare-junkie/hero.mp4',
+    heroPoster: '/projects/skincare-junkie/hero.webp',
+    cardVideo: '/projects/skincare-junkie/card.mp4',
     tint: '#3a3322',
     mainVideo: 'https://www.instagram.com/p/DeNMlMou0D5/',
     reels: [],
@@ -123,6 +134,9 @@ export const projects: Project[] = [
     hook: "A cinematic look inside the studio, capturing the artist's process from first line to finished piece.",
     story: [],
     thumbnail: '/projects/sashatattoo-essential/thumb.webp',
+    heroVideo: '/projects/sashatattoo-essential/hero.mp4',
+    heroPoster: '/projects/sashatattoo-essential/hero.webp',
+    cardVideo: '/projects/sashatattoo-essential/card.mp4',
     tint: '#33262a',
     mainVideo: 'https://www.instagram.com/reel/Dc_qSiVy8iW/',
     reels: [
@@ -177,6 +191,10 @@ export const projects: Project[] = [
     year: '2026',
     hook: 'Lifestyle content introducing the capsule collection, styled to feel effortless and wearable.',
     story: [],
+    thumbnail: '/projects/genic/thumb.webp',
+    heroVideo: '/projects/genic/hero.mp4',
+    heroPoster: '/projects/genic/hero.webp',
+    cardVideo: '/projects/genic/card.mp4',
     tint: '#352c22',
     mainVideo: 'https://www.instagram.com/reel/DbULj7Ip0tn/',
     reels: [],
@@ -192,6 +210,10 @@ export const projects: Project[] = [
     year: '2026',
     hook: "Mukbang-style content promoting ARIH's ramen and drinks, including their BTS collab lineup.",
     story: [],
+    thumbnail: '/projects/arih/thumb.webp',
+    heroVideo: '/projects/arih/hero.mp4',
+    heroPoster: '/projects/arih/hero.webp',
+    cardVideo: '/projects/arih/card.mp4',
     tint: '#2b2238',
     mainVideo: 'https://www.instagram.com/reel/DZdY09nShrA/',
     reels: [],
@@ -209,6 +231,44 @@ export const projects: Project[] = [
     story: [],
     tint: '#25302a',
     mainVideo: 'https://www.instagram.com/reel/DabJ5iYyqlM/',
+    reels: [],
+  },
+  {
+    slug: 'rapville',
+    brand: 'rapville',
+    client: 'RAPVILLE',
+    title: 'Roster content',
+    summary: 'Roster content · Videographer',
+    role: ['Videographer (filming only)'],
+    deliverables: 'Social content for the roster',
+    year: '2026',
+    hook: 'Filming social content for artists on the RAPVILLE roster.',
+    story: [],
+    credit: 'filmed by me · edited by the RAPVILLE team',
+    thumbnail: '/projects/rapville/thumb.webp',
+    heroVideo: '/projects/rapville/hero.mp4',
+    heroPoster: '/projects/rapville/hero.webp',
+    cardVideo: '/projects/rapville/card.mp4',
+    tint: '#2f2a24',
+    reels: [],
+    // Group the videos by artist. Example:
+    // videoGroups: [
+    //   { title: 'artist name', videos: ['https://www.instagram.com/reel/…/', '…'] },
+    // ],
+    videoGroups: [],
+  },
+  {
+    slug: 'pgytech',
+    brand: 'pgytech',
+    client: 'PGYTECH',
+    title: 'Camera gear content',
+    summary: 'Camera gear content · Content creator',
+    role: ['Content creator'],
+    deliverables: 'Product content',
+    year: '2026',
+    hook: "Cinematic product content showing PGYTECH's camera gear in real shoots.",
+    story: [],
+    tint: '#23302e',
     reels: [],
   },
 ];

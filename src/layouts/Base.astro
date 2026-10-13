@@ -13,9 +13,19 @@ interface Props {
   description?: string;
   image?: string;
   variant?: 'home' | 'project';
+  /** Project pages: where the "←" nav link goes. */
+  backHref?: string;
+  backLabel?: string;
 }
 
-const { title = site.title, description = site.description, image = '/images/og.jpg', variant = 'home' } = Astro.props;
+const {
+  title = site.title,
+  description = site.description,
+  image = '/images/og.jpg',
+  variant = 'home',
+  backHref,
+  backLabel,
+} = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
 ---
@@ -46,7 +56,7 @@ const ogImage = new URL(image, Astro.site);
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <Nav variant={variant} />
+    <Nav variant={variant} backHref={backHref} backLabel={backLabel} />
     <main id="main">
       <slot />
     </main>

@@ -32,11 +32,7 @@ const kind = embed?.kind ?? 'empty';
         <span class="play" aria-hidden="true">▶</span>
         <span class="mono">Watch {title} ↗</span>
       </a>
-    ) : (
-      <div class="fallback">
-        <span class="placeholder-label">[ {isVertical ? 'reel' : 'video'} embed ]</span>
-      </div>
-    )
+    ) : null
   }
 </div>
 

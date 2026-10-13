@@ -1,0 +1,15 @@
+---
+import ProjectPage from '../../components/ProjectPage.astro';
+import { specProjects } from '../../data/spec';
+
+export function getStaticPaths() {
+  return specProjects.map((project, index) => ({
+    params: { slug: project.slug },
+    props: { project, index },
+  }));
+}
+
+const { project, index } = Astro.props;
+---
+
+<ProjectPage project={project} index={index} list={specProjects} kind="spec" />

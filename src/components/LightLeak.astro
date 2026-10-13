@@ -19,6 +19,9 @@ const { variant = 'hero' } = Astro.props;
     pointer-events: none;
     overflow: hidden;
     z-index: 0;
+    /* fade out at the section edges so the glow never ends in a hard line */
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 78%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 78%, transparent);
   }
   .leak {
     position: absolute;

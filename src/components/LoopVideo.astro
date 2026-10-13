@@ -16,10 +16,8 @@ const { src, poster, tint } = Astro.props;
     )
   }
   {
-    src ? (
+    src && (
       <video data-src={src} poster={poster} muted loop playsinline preload="none" aria-hidden="true" />
-    ) : (
-      !poster && <span class="placeholder-label tag">[ full-screen looping video ]</span>
     )
   }
 </div>
@@ -35,6 +33,7 @@ const { src, poster, tint } = Astro.props;
         for (const entry of entries) {
           if (entry.isIntersecting) {
             if (!video.src) {
+              video.muted = true;
               video.src = video.dataset.src!;
               video.addEventListener('playing', () => video.classList.add('on'), { once: true });
             }
@@ -73,10 +72,5 @@ const { src, poster, tint } = Astro.props;
   }
   video:global(.on) {
     opacity: 1;
-  }
-  .tag {
-    position: absolute;
-    top: calc(var(--nav-h) + 18px);
-    right: var(--gutter);
   }
 </style>

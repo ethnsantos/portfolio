@@ -44,7 +44,7 @@ export const brandGroups: BrandGroup[] = [
       { name: 'BetterHelp' },
       { name: 'AOCHUAN' },
       { name: 'Tsingtao' },
-      { name: 'PGYTECH' },
+      { name: 'PGYTECH', project: 'pgytech' },
       { name: 'MOFT' },
       { name: 'AVIO' },
       { name: 'Happylamb' },
@@ -63,7 +63,7 @@ export const brandGroups: BrandGroup[] = [
     brands: [
       { name: 'Peachtree Rascals', project: 'peach-tree-rascals' },
       { name: 'TwinSoundz', project: 'twinsoundz' },
-      { name: 'RAPVILLE' },
+      { name: 'RAPVILLE', project: 'rapville' },
       { name: 'RC AVENUE' },
       { name: 'Academy Rejects' },
       { name: 'Summer Solstice' },

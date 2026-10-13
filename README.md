@@ -21,16 +21,31 @@ and the "next project" chain. A page is created automatically at `/work/<slug>`.
   work for `mainVideo` too. Short `vm.tiktok.com` links won't embed — open them
   in a browser and copy the full URL.
 - Media goes in `public/projects/<slug>/`:
-  - `thumb.webp` — card image, 16:10, ~1200px wide → `thumbnail: '/projects/<slug>/thumb.webp'`
-  - `hero.mp4` — 5–8s silent loop, 720p, under ~4 MB → `heroVideo`
-  - `hero.webp` — still frame from the loop → `heroPoster`
+  - `thumb.webp` — card still, 16:10, 960×600 → `thumbnail`
+  - `card.mp4` — small 16:10 loop for the card (plays on hover / in view) → `cardVideo`
+  - `hero.mp4` — full-screen silent loop, 5–10s, 720p → `heroVideo`
+  - `hero.webp` — first frame of the loop, shown while it loads → `heroPoster`
 
-  Quick way to make the loop + poster from a clip:
+  Making them from a clip (`-ss` = start second, `-t` = length;
+  use `scale=-2:720` for a landscape clip, `scale=720:-2` for a vertical one):
 
   ```bash
-  ffmpeg -i clip.mov -t 8 -an -vf "scale=-2:720" -c:v libx264 -crf 28 -preset slow -movflags +faststart hero.mp4
-  ffmpeg -i hero.mp4 -frames:v 1 -vf "scale=-2:720" hero.webp
+  ffmpeg -ss 0 -t 10 -i clip.mov -an -vf "scale=720:-2,fps=24" -c:v libx264 -preset slow -crf 28 -pix_fmt yuv420p -movflags +faststart hero.mp4
+  ffmpeg -ss 0 -t 10 -i clip.mov -an -vf "crop='min(iw,ih*16/10)':'min(ih,iw*10/16)',scale=640:400,fps=24" -c:v libx264 -preset slow -crf 30 -pix_fmt yuv420p -movflags +faststart card.mp4
+  ffmpeg -i hero.mp4 -frames:v 1 hero.webp
   ```
+
+- `videoGroups` shows videos under headings instead of one main video, e.g. by
+  artist: `videoGroups: [{ title: 'artist name', videos: ['https://…', '…'] }]`.
+- `credit` adds a small orange line under the details, e.g. who edited it.
+
+## Spec work
+
+Self-initiated spec ads live in **`src/data/spec.ts`**, separate from client work.
+Entries use the same fields as projects, get a page at `/spec/<slug>`, an orange
+"spec ad" tag on their card, and a "spec work · not affiliated with …" line.
+While the list is empty, the `/spec` page, the `./spec` nav link and the
+"see spec work" button are hidden; adding the first entry brings them back.
 
 Your name, tagline, about text, email and socials are in `src/data/site.ts`.
 

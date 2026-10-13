@@ -5,12 +5,12 @@ import FilmStrip from '../components/FilmStrip.astro';
 import LightLeak from '../components/LightLeak.astro';
 import CircledLink from '../components/CircledLink.astro';
 import Marquee from '../components/Marquee.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import ProjectGrid from '../components/ProjectGrid.astro';
 import BrandGrid from '../components/BrandGrid.astro';
-import { projects, pad, yearRange } from '../data/projects';
+import { projects } from '../data/projects';
+import { specProjects } from '../data/spec';
 import { site, bookingHref } from '../data/site';
 
-const range = yearRange();
 ---
 
 <Base>
@@ -45,18 +45,9 @@ const range = yearRange();
 
   <!-- WORK -->
   <section id="work" class="work wrap">
-    <div class="work-head">
-      <h2>
-        <svg class="folder" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4.6l2 2.2h8.4A1.5 1.5 0 0 1 21 8.7v9.8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z" />
-        </svg>
-        selected work
-      </h2>
-      <p class="mono count">{pad(projects.length)} projects{range && ` · ${range}`}</p>
-    </div>
-    <div class="grid">
-      {projects.map((project, i) => <ProjectCard project={project} index={i} />)}
-    </div>
+    <ProjectGrid title="selected work" list={projects}>
+      {specProjects.length > 0 && <a class="spec-link mono" href="/spec">see spec work →</a>}
+    </ProjectGrid>
   </section>
 
   <!-- BRANDS -->
@@ -152,48 +143,23 @@ const range = yearRange();
   .work {
     padding-block: clamp(64px, 9vw, 110px) clamp(48px, 7vw, 80px);
   }
-  .work-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 8px 24px;
-    margin-bottom: clamp(24px, 4vw, 40px);
-  }
-  .work-head h2 {
-    display: flex;
+  .spec-link {
+    display: inline-flex;
     align-items: center;
-    gap: 0.25em;
-    font-size: clamp(40px, 6vw, 58px);
+    min-height: 48px;
+    margin-top: clamp(32px, 4vw, 44px);
+    padding: 0 22px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    color: var(--accent);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    transition: background 0.2s, color 0.2s;
   }
-  .folder {
-    width: 0.62em;
-    height: 0.62em;
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 1.6;
-    stroke-linejoin: round;
-    margin-top: 0.08em;
-  }
-  .count {
-    margin: 0;
-    font-size: 9px;
-    color: var(--cream-faint);
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(28px, 3.5vw, 40px) clamp(16px, 2vw, 22px);
-  }
-  @media (max-width: 900px) {
-    .grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  @media (max-width: 560px) {
-    .grid {
-      grid-template-columns: 1fr;
-    }
+  .spec-link:hover {
+    background: var(--accent);
+    color: #1a120c;
   }
 
   /* BRANDS */

@@ -1,6 +1,6 @@
 ---
 interface Props {
-  /** Leave out to show a "[ photo ]" placeholder. */
+  /** Leave out to show an empty dark frame. */
   src?: string;
   srcSmall?: string;
   alt: string;
@@ -10,7 +10,6 @@ interface Props {
   class?: string;
   /** Adds an orange push-pin at the top. */
   pinned?: boolean;
-  placeholder?: string;
 }
 const {
   src,
@@ -21,7 +20,6 @@ const {
   eager = false,
   class: className,
   pinned = false,
-  placeholder = 'photo',
 } = Astro.props;
 const srcset = srcSmall ? `${srcSmall} 480w, ${src} 800w` : undefined;
 ---
@@ -30,7 +28,7 @@ const srcset = srcSmall ? `${srcSmall} 480w, ${src} 800w` : undefined;
   {pinned && <span class="pin" aria-hidden="true" />}
   <div class="photo">
     {
-      src ? (
+      src && (
         <img
           src={src}
           srcset={srcset}
@@ -42,8 +40,6 @@ const srcset = srcSmall ? `${srcSmall} 480w, ${src} 800w` : undefined;
           fetchpriority={eager ? 'high' : 'auto'}
           decoding="async"
         />
-      ) : (
-        <span class="placeholder-label">[ {placeholder} ]</span>
       )
     }
   </div>

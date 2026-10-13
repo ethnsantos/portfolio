@@ -1,0 +1,66 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProjectGrid from '../../components/ProjectGrid.astro';
+import LightLeak from '../../components/LightLeak.astro';
+import { specProjects } from '../../data/spec';
+import { site, bookingHref } from '../../data/site';
+
+// The /spec page only exists once there's at least one spec project.
+export function getStaticPaths() {
+  return specProjects.length > 0 ? [{ params: { index: undefined } }] : [];
+}
+---
+
+<Base
+  title={`Spec work | ${site.name}`}
+  description="Self-initiated spec ads and campaigns by Ethan Santos."
+>
+  <section class="spec">
+    <LightLeak variant="about" />
+    <div class="inner wrap">
+      <p class="label">./spec</p>
+      <ProjectGrid
+        title="spec work"
+        list={specProjects}
+        kind="spec"
+        as="h1"
+        intro="Self-initiated spec ads and campaigns: ideas I shot on my own for brands I'd love to work with."
+      />
+      <div class="links">
+        <a class="back mono" href="/#work">← client work</a>
+        <a class="btn" href={bookingHref}>Book a shoot <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .spec {
+    position: relative;
+    overflow: hidden;
+    padding-top: calc(var(--nav-h) + env(safe-area-inset-top));
+  }
+  .inner {
+    position: relative;
+    z-index: 1;
+    padding-block: clamp(48px, 8vw, 96px) clamp(64px, 9vw, 110px);
+  }
+  .label {
+    margin: 0 0 10px;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 28px;
+    margin-top: clamp(40px, 6vw, 64px);
+  }
+  .back {
+    padding-block: 14px;
+    font-size: 12px;
+    text-transform: none;
+  }
+  .back:hover {
+    color: var(--accent);
+  }
+</style>

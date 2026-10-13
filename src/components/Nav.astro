@@ -1,10 +1,13 @@
 ---
 import { bookingHref } from '../data/site';
+import { specProjects } from '../data/spec';
 
 interface Props {
   variant?: 'home' | 'project';
+  backHref?: string;
+  backLabel?: string;
 }
-const { variant = 'home' } = Astro.props;
+const { variant = 'home', backHref = '/#work', backLabel = './work' } = Astro.props;
 ---
 
 <header class:list={['nav', variant]}>
@@ -16,11 +19,12 @@ const { variant = 'home' } = Astro.props;
       variant === 'home' ? (
         <>
           <a href="/#work">./work</a>
+          {specProjects.length > 0 && <a href="/spec">./spec</a>}
           <a href="/#brands" class="hide-sm">./brands</a>
           <a href="/#about" class="hide-sm">./about</a>
         </>
       ) : (
-        <a href="/#work">← ./work</a>
+        <a href={backHref}>← {backLabel}</a>
       )
     }
     <a href={bookingHref} class="cta">./book-a-shoot ↗</a>

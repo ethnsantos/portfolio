@@ -7,6 +7,9 @@
 //  gets its own page at /spec/<slug>, with a small "spec ad" tag on
 //  its card and a "spec work · not affiliated with <client>" line.
 //  Clips go in public/projects/spec-<slug>/ to keep them apart.
+//
+//  While this list is empty the /spec page, the ./spec nav link and the
+//  "see spec work" button are all hidden. Add an entry and they appear.
 // ─────────────────────────────────────────────────────────────
 
 import type { Project } from './projects';

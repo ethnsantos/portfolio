@@ -8,6 +8,7 @@ import Marquee from '../components/Marquee.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
 import BrandGrid from '../components/BrandGrid.astro';
 import { projects } from '../data/projects';
+import { specProjects } from '../data/spec';
 import { site, bookingHref } from '../data/site';
 
 ---
@@ -45,7 +46,7 @@ import { site, bookingHref } from '../data/site';
   <!-- WORK -->
   <section id="work" class="work wrap">
     <ProjectGrid title="selected work" list={projects}>
-      <a class="spec-link mono" href="/spec">see spec work →</a>
+      {specProjects.length > 0 && <a class="spec-link mono" href="/spec">see spec work →</a>}
     </ProjectGrid>
   </section>
 

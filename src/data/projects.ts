@@ -272,28 +272,31 @@ export const projects: Project[] = [
     cardVideo: '/projects/rapville/card.mp4',
     tint: '#2f2a24',
     reels: [],
-    // Group the videos by artist. Example:
-    // videoGroups: [
-    //   { title: 'artist name', videos: ['https://www.instagram.com/reel/…/', '…'] },
-    // ],
-    videoGroups: [],
+    // Videos grouped by artist. Add another artist as another { title, videos } entry.
+    videoGroups: [
+      {
+        title: 'Zale',
+        videos: ['https://www.instagram.com/reel/Dd45D2RiOn7/', 'https://www.instagram.com/reel/DdfJEZ4k2Qh/'],
+      },
+    ],
   },
   {
     slug: 'pgytech',
     brand: 'pgytech',
     client: 'PGYTECH',
-    title: 'Camera gear content',
-    summary: 'Camera gear content · Content creator',
+    title: 'OneGo Roamer Bag',
+    summary: 'OneGo Roamer Bag · Content creator',
     role: ['Content creator'],
-    deliverables: 'Product content',
+    deliverables: '1 Instagram reel',
     year: '2026',
-    hook: "Cinematic product content showing PGYTECH's camera gear in real shoots.",
+    hook: 'Lifestyle and product content built around the OneGo Roamer, the bag that keeps up with the shoot.',
     story: [],
     thumbnail: '/projects/pgytech/thumb.webp',
     heroVideo: '/projects/pgytech/hero.mp4',
     heroPoster: '/projects/pgytech/hero.webp',
     cardVideo: '/projects/pgytech/card.mp4',
     tint: '#23302e',
+    mainVideo: 'https://www.instagram.com/reel/DY4a3RChjoN/',
     reels: [],
   },
 ];

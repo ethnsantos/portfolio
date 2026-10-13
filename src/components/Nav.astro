@@ -1,5 +1,6 @@
 ---
 import { bookingHref } from '../data/site';
+import { specProjects } from '../data/spec';
 
 interface Props {
   variant?: 'home' | 'project';
@@ -18,7 +19,7 @@ const { variant = 'home', backHref = '/#work', backLabel = './work' } = Astro.pr
       variant === 'home' ? (
         <>
           <a href="/#work">./work</a>
-          <a href="/spec">./spec</a>
+          {specProjects.length > 0 && <a href="/spec">./spec</a>}
           <a href="/#brands" class="hide-sm">./brands</a>
           <a href="/#about" class="hide-sm">./about</a>
         </>

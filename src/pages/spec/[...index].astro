@@ -4,6 +4,11 @@ import ProjectGrid from '../../components/ProjectGrid.astro';
 import LightLeak from '../../components/LightLeak.astro';
 import { specProjects } from '../../data/spec';
 import { site, bookingHref } from '../../data/site';
+
+// The /spec page only exists once there's at least one spec project.
+export function getStaticPaths() {
+  return specProjects.length > 0 ? [{ params: { index: undefined } }] : [];
+}
 ---
 
 <Base
@@ -21,7 +26,6 @@ import { site, bookingHref } from '../../data/site';
         as="h1"
         intro="Self-initiated spec ads and campaigns: ideas I shot on my own for brands I'd love to work with."
       />
-      {specProjects.length === 0 && <p class="empty hand">first spec ads dropping soon :)</p>}
       <div class="links">
         <a class="back mono" href="/#work">← client work</a>
         <a class="btn" href={bookingHref}>Book a shoot <span aria-hidden="true">↗</span></a>
@@ -43,13 +47,6 @@ import { site, bookingHref } from '../../data/site';
   }
   .label {
     margin: 0 0 10px;
-  }
-  .empty {
-    margin: 0;
-    color: var(--accent);
-    font-size: 26px;
-    transform: rotate(-2deg);
-    transform-origin: left;
   }
   .links {
     display: flex;

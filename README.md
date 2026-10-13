@@ -44,6 +44,8 @@ and the "next project" chain. A page is created automatically at `/work/<slug>`.
 Self-initiated spec ads live in **`src/data/spec.ts`**, separate from client work.
 Entries use the same fields as projects, get a page at `/spec/<slug>`, an orange
 "spec ad" tag on their card, and a "spec work · not affiliated with …" line.
+While the list is empty, the `/spec` page, the `./spec` nav link and the
+"see spec work" button are hidden; adding the first entry brings them back.
 
 Your name, tagline, about text, email and socials are in `src/data/site.ts`.
 

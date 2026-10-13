@@ -6,6 +6,7 @@ import LightLeak from '../components/LightLeak.astro';
 import CircledLink from '../components/CircledLink.astro';
 import Marquee from '../components/Marquee.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import BrandGrid from '../components/BrandGrid.astro';
 import { projects, pad, yearRange } from '../data/projects';
 import { site, bookingHref } from '../data/site';
 
@@ -39,10 +40,8 @@ const range = yearRange();
     </div>
   </section>
 
-  <!-- BRANDS -->
-  <section id="brands" aria-label="Brands I've worked with">
-    <Marquee items={projects.map((p) => p.brand)} />
-  </section>
+  <!-- BRAND MARQUEE -->
+  <Marquee items={projects.map((p) => p.brand)} />
 
   <!-- WORK -->
   <section id="work" class="work wrap">
@@ -58,6 +57,15 @@ const range = yearRange();
     <div class="grid">
       {projects.map((project, i) => <ProjectCard project={project} index={i} />)}
     </div>
+  </section>
+
+  <!-- BRANDS -->
+  <section id="brands" class="brands wrap">
+    <div class="brands-head">
+      <p class="label">./brands</p>
+      <h2>brands i've worked with</h2>
+    </div>
+    <BrandGrid />
   </section>
 
   <!-- ABOUT -->
@@ -186,6 +194,18 @@ const range = yearRange();
     .grid {
       grid-template-columns: 1fr;
     }
+  }
+
+  /* BRANDS */
+  .brands {
+    padding-block: clamp(32px, 5vw, 56px) clamp(72px, 10vw, 120px);
+  }
+  .brands-head {
+    margin-bottom: clamp(28px, 4vw, 44px);
+  }
+  .brands-head h2 {
+    margin-top: 10px;
+    font-size: clamp(36px, 5.6vw, 58px);
   }
 
   /* ABOUT */

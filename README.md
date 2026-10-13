@@ -34,6 +34,10 @@ and the "next project" chain. A page is created automatically at `/work/<slug>`.
 
 Your name, tagline, about text, email and socials are in `src/data/site.ts`.
 
+The "brands i've worked with" grid is in `src/data/brands.ts`. Add a name to a group
+(or a new group). Give it `project: '<slug>'` to link it to that project page, or
+`logo: '/brands/<file>.svg'` to show a logo instead of the name.
+
 ## Fonts
 
 Acumin Pro comes from Adobe Fonts (kit `xii8bhd`). In the Adobe Fonts web

@@ -1,35 +1,58 @@
 ---
+import Polaroid from './Polaroid.astro';
 import { brandGroups } from '../data/brands';
+
+// Small, repeatable irregularities so the names read like a wall, not a table.
+const TILTS = [-3, 2.5, -2, 3.5, -2.5, 2];
+const spacing = (i: number) => ({
+  gap: 22 + ((i * 53) % 5) * 6, // 22–46px after each name
+  dy: ((i * 37) % 7) - 3, // nudged up/down by up to 3px
+  tilt: TILTS[i % TILTS.length],
+});
 ---
 
 <div class="groups">
   {
-    brandGroups.map((group) => (
-      <div class="group">
-        <p class="label group-label">
-          {group.label} <span class="count">· {String(group.brands.length).padStart(2, '0')}</span>
-        </p>
-        <ul class="grid">
-          {group.brands.map((brand) => {
-            const content = brand.logo ? (
-              <img src={brand.logo} alt={brand.name} loading="lazy" decoding="async" />
-            ) : (
-              <span class="name">{brand.name}</span>
-            );
-            return (
-              <li>
-                {brand.project ? (
-                  <a class="cell linked" href={`/work/${brand.project}`}>
-                    {content}
-                    <span class="mono tag">./project ↗</span>
-                  </a>
-                ) : (
-                  <span class="cell">{content}</span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+    brandGroups.map((group, g) => (
+      <div class:list={['group', { flip: g % 2 === 1 }]}>
+        <Polaroid
+          src={group.photo.src}
+          alt={group.photo.alt}
+          caption={group.photo.caption}
+          tilt={g % 2 === 1 ? 5 : -5}
+          pinned
+          placeholder="bts photo"
+          class="bts"
+        />
+        <div class="wall-wrap">
+          <p class="label group-label">
+            ./{group.label} <span class="count">· {String(group.brands.length).padStart(2, '0')}</span>
+          </p>
+          <ul class="wall">
+            {group.brands.map((brand, i) => {
+              const s = spacing(i + g * 3);
+              const style = `--gap:${s.gap}px;--dy:${s.dy}px;--tilt:${s.tilt}deg`;
+              const content = brand.logo ? (
+                <img src={brand.logo} alt={brand.name} loading="lazy" decoding="async" />
+              ) : (
+                brand.name
+              );
+              return (
+                <li style={style}>
+                  {brand.project ? (
+                    <a class="name linked" href={`/work/${brand.project}`}>
+                      {content}
+                      <span class="arrow" aria-hidden="true">↗</span>
+                      <span class="sr-only"> (see project)</span>
+                    </a>
+                  ) : (
+                    <span class="name">{content}</span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     ))
   }
@@ -38,84 +61,98 @@ import { brandGroups } from '../data/brands';
 <style>
   .groups {
     display: grid;
-    gap: clamp(36px, 5vw, 56px);
+    gap: clamp(56px, 8vw, 96px);
+  }
+  .group {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: clamp(28px, 5vw, 64px);
+  }
+  .group.flip {
+    grid-template-columns: 1fr auto;
+  }
+  .group.flip :global(.bts) {
+    order: 2;
+  }
+  .group :global(.bts) {
+    width: clamp(150px, 15vw, 190px);
+    padding: 9px 9px 0;
+  }
+  .group :global(.bts figcaption) {
+    font-size: 19px;
+    padding: 10px 0 13px;
   }
   .group-label {
-    margin: 0 0 14px;
+    margin: 0 0 18px;
   }
   .count {
     color: var(--cream-faint);
   }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    column-gap: clamp(16px, 2vw, 24px);
+  .wall {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    row-gap: clamp(14px, 2vw, 20px);
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  li {
-    border-top: 1px solid var(--line);
-  }
-  .cell {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 6px;
-    min-height: 76px;
-    padding-block: 16px;
+  .wall li {
+    margin-right: var(--gap);
+    translate: 0 var(--dy);
   }
   .name {
+    display: inline-block;
     font-family: var(--f-head);
     font-weight: 700;
     text-transform: lowercase;
     letter-spacing: -0.05em;
-    font-size: clamp(19px, 2vw, 23px);
-    line-height: 1;
-    transition: color 0.2s;
+    font-size: clamp(22px, 2.6vw, 30px);
+    line-height: 1.05;
+    white-space: nowrap;
+    transform-origin: 50% 0;
+    transition:
+      rotate 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+      color 0.2s;
   }
-  .cell img {
-    max-height: 32px;
-    max-width: 140px;
-    object-fit: contain;
-    object-position: left center;
-    opacity: 0.85;
-    transition: opacity 0.2s;
-  }
-  .tag {
-    font-size: 9px;
+  .name:hover,
+  .name:focus-visible {
     color: var(--accent);
-    opacity: 0.75;
-    transition: opacity 0.2s, transform 0.2s;
+    rotate: var(--tilt);
   }
-  .cell:hover .name,
-  .linked:focus-visible .name {
+  .arrow {
+    margin-left: 0.15em;
+    font-size: 0.5em;
+    vertical-align: super;
     color: var(--accent);
   }
-  .linked:hover img {
-    opacity: 1;
+  .name img {
+    display: inline-block;
+    height: 0.9em;
+    width: auto;
+    vertical-align: baseline;
   }
-  .linked:hover .tag {
-    opacity: 1;
-    transform: translateX(3px);
-  }
-  @media (max-width: 1000px) {
-    .grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+  @media (max-width: 700px) {
+    .group,
+    .group.flip {
+      grid-template-columns: 1fr;
+      gap: 26px;
     }
-  }
-  @media (max-width: 760px) {
-    .grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    .group :global(.bts),
+    .group.flip :global(.bts) {
+      order: 0;
+      width: 140px;
     }
-  }
-  @media (max-width: 560px) {
-    .grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .group.flip :global(.bts) {
+      justify-self: end;
+      margin-right: 8px;
     }
-    .cell {
-      min-height: 64px;
-      padding-block: 14px;
+    .group :global(.bts) {
+      margin-left: 8px;
+    }
+    .name {
+      white-space: normal;
     }
   }
 </style>

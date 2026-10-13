@@ -1,36 +1,58 @@
 ---
 interface Props {
-  src: string;
+  /** Leave out to show a "[ photo ]" placeholder. */
+  src?: string;
   srcSmall?: string;
   alt: string;
   caption: string;
   tilt?: number;
   eager?: boolean;
   class?: string;
+  /** Adds an orange push-pin at the top. */
+  pinned?: boolean;
+  placeholder?: string;
 }
-const { src, srcSmall, alt, caption, tilt = -4, eager = false, class: className } = Astro.props;
+const {
+  src,
+  srcSmall,
+  alt,
+  caption,
+  tilt = -4,
+  eager = false,
+  class: className,
+  pinned = false,
+  placeholder = 'photo',
+} = Astro.props;
 const srcset = srcSmall ? `${srcSmall} 480w, ${src} 800w` : undefined;
 ---
 
 <figure class:list={['polaroid', className]} style={`--tilt:${tilt}deg`}>
+  {pinned && <span class="pin" aria-hidden="true" />}
   <div class="photo">
-    <img
-      src={src}
-      srcset={srcset}
-      sizes="(max-width: 600px) 64vw, 300px"
-      alt={alt}
-      width="800"
-      height="800"
-      loading={eager ? 'eager' : 'lazy'}
-      fetchpriority={eager ? 'high' : 'auto'}
-      decoding="async"
-    />
+    {
+      src ? (
+        <img
+          src={src}
+          srcset={srcset}
+          sizes="(max-width: 600px) 64vw, 300px"
+          alt={alt}
+          width="800"
+          height="800"
+          loading={eager ? 'eager' : 'lazy'}
+          fetchpriority={eager ? 'high' : 'auto'}
+          decoding="async"
+        />
+      ) : (
+        <span class="placeholder-label">[ {placeholder} ]</span>
+      )
+    }
   </div>
   <figcaption class="hand">{caption}</figcaption>
 </figure>
 
 <style>
   .polaroid {
+    position: relative;
     margin: 0;
     width: min(300px, 68vw);
     padding: 14px 14px 0;
@@ -46,7 +68,21 @@ const srcset = srcSmall ? `${srcSmall} 480w, ${src} 800w` : undefined;
   .polaroid:hover {
     transform: rotate(calc(var(--tilt) * 0.4)) scale(1.02);
   }
+  .pin {
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    z-index: 1;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ffb08a, var(--accent) 45%, #b8481a);
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.45);
+  }
   .photo {
+    display: grid;
+    place-items: center;
     aspect-ratio: 1;
     background: #262a28;
     overflow: hidden;

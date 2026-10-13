@@ -34,6 +34,12 @@ and the "next project" chain. A page is created automatically at `/work/<slug>`.
 
 Your name, tagline, about text, email and socials are in `src/data/site.ts`.
 
+The "who i've worked with" wall is in `src/data/brands.ts`. Add a name to a group
+(or a new group). Give it `project: '<slug>'` to link it to that project page, or
+`logo: '/brands/<file>.svg'` to show a logo instead of the name. Each group's pinned
+polaroid shows a placeholder until you set `photo.src` (put a square image in
+`public/images/bts/`, e.g. `'/images/bts/artists.webp'`) and its `caption`.
+
 ## Fonts
 
 Acumin Pro comes from Adobe Fonts (kit `xii8bhd`). In the Adobe Fonts web

@@ -30,7 +30,11 @@ export interface BrandGroup {
 export const brandGroups: BrandGroup[] = [
   {
     label: 'brands',
-    photo: { alt: 'Behind the scenes on a brand shoot', caption: 'on set' },
+    photo: {
+      src: '/images/bts/brands.webp',
+      alt: 'Close-up of a black trail shoe on a log in the forest',
+      caption: 'on set',
+    },
     brands: [
       { name: 'Insta360', project: 'insta360' },
       { name: 'SPUNGE', project: 'spunge' },
@@ -51,7 +55,11 @@ export const brandGroups: BrandGroup[] = [
   },
   {
     label: 'artists',
-    photo: { alt: 'Behind the scenes with an artist', caption: 'side of stage' },
+    photo: {
+      src: '/images/bts/artists.webp',
+      alt: 'TwinSoundz outside San Pedro Square Market for the Drive You Crazy release',
+      caption: 'release day :)',
+    },
     brands: [
       { name: 'Peachtree Rascals', project: 'peach-tree-rascals' },
       { name: 'TwinSoundz', project: 'twinsoundz' },
@@ -63,7 +71,11 @@ export const brandGroups: BrandGroup[] = [
   },
   {
     label: 'businesses',
-    photo: { alt: 'Behind the scenes at a local business', caption: 'in the shop' },
+    photo: {
+      src: '/images/bts/businesses.webp',
+      alt: 'A tattoo artist mid-session in the studio',
+      caption: 'in the shop',
+    },
     brands: [
       { name: 'Sashatattoo Essential Tattoo', project: 'sashatattoo-essential' },
       { name: 'New Generation Tattoo' },

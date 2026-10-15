@@ -1,13 +1,24 @@
 // Turns a pasted video link into what a video card needs: platform, post id,
-// shape and label. Instagram and TikTok don't let a static site read a post's
-// shape or thumbnail, so the shape comes from the link type unless you set it:
+// shape, embed address and label. The shape comes from the link type unless set:
 //
 //   'https://www.instagram.com/reel/ABC123/'                     → 9:16
 //   { url: 'https://www.instagram.com/p/ABC123/', ratio: '4:5' }  → 4:5
 //   { url: '…', still: '/projects/insta360/stills/my-frame.webp' }
 //
-// Stills: a card uses `still` if set, else public/projects/<slug>/stills/<post-id>.webp
-// if that file exists, else the project's hero still / thumbnail.
+// The still shows while the embed loads (and if it can't load): `still` if set,
+// else public/projects/<slug>/stills/<post-id>.webp if it exists, else the
+// project's hero still / thumbnail.
+
+/**
+ * Instagram embed crop. The embed is rendered at `baseWidth` px (Instagram's
+ * layout breaks below ~326px), scaled to the card, and shifted up by `headerPx`
+ * so only the video shows — the header (username / View profile) is cut off the
+ * top and everything under the video (View more on Instagram, icons, likes,
+ * comment box) falls outside the card. If a thin strip of header shows, raise
+ * `headerPx`; if the top of the video is cut, lower it. `sidePx` trims the
+ * embed's 1px border.
+ */
+export const INSTAGRAM_CROP = { baseWidth: 400, headerPx: 56, sidePx: 1 };
 
 export type Video = string | { url: string; ratio?: string; still?: string };
 
@@ -25,6 +36,8 @@ export interface VideoInfo {
   /** True when the shape was guessed from the link type rather than set. */
   ratioGuessed: boolean;
   still?: string;
+  /** iframe address, if this platform can be embedded. */
+  embed?: string;
   label: string;
 }
 
@@ -85,6 +98,24 @@ export function videoInfo(video: Video): VideoInfo {
     ratioLabel,
     ratioGuessed: !v.ratio,
     still: v.still,
+    embed: embedSrc(platform, id),
     label: LABELS[platform],
   };
+}
+
+function embedSrc(platform: Platform, id: string): string | undefined {
+  if (!id) return undefined;
+  switch (platform) {
+    case 'instagram':
+      return `https://www.instagram.com/p/${id}/embed/`;
+    case 'tiktok':
+      // TikTok's player has no profile/like chrome, so it fills the card uncropped.
+      return /^\d+$/.test(id) ? `https://www.tiktok.com/player/v1/${id}?description=0&music_info=0&rel=0` : undefined;
+    case 'youtube':
+      return `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`;
+    case 'vimeo':
+      return `https://player.vimeo.com/video/${id}?dnt=1`;
+    default:
+      return undefined;
+  }
 }

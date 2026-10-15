@@ -79,7 +79,7 @@ export const brandGroups: BrandGroup[] = [
     brands: [
       { name: 'Sashatattoo Essential Tattoo', project: 'sashatattoo-essential' },
       { name: 'New Generation Tattoo' },
-      { name: 'Mr. Poppy HVAC & Electrical' },
+      { name: 'Mr. Poppy HVAC & Electrical', project: 'mr-poppy' },
       { name: 'Loopy' },
     ],
   },

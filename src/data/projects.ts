@@ -171,7 +171,7 @@ export const projects: Project[] = [
     cardVideo: '/projects/sashatattoo-essential/card.mp4',
     tint: '#33262a',
     // Own video files in the site's player. Remove to go back to the Instagram embeds below.
-    localVideos: ownVideos('sashatattoo-essential', [1, 2, 3, 4]),
+    localVideos: ownVideos('sashatattoo-essential', [1, 2, 3, 4, 5]),
     mainVideo: 'https://www.instagram.com/reel/Dc_qSiVy8iW/',
     reels: [
       'https://www.instagram.com/reel/DcSIeg1S0-6/',
@@ -215,6 +215,9 @@ export const projects: Project[] = [
     heroPoster: '/projects/twinsoundz/hero.webp',
     cardVideo: '/projects/twinsoundz/card.mp4',
     tint: '#1f3330',
+    // Own video files in the site's player. Remove to go back to the Instagram embeds below.
+    // #4 is landscape (4:3); the rest are vertical.
+    localVideos: [...ownVideos('twinsoundz', [1, 2, 3]), ...ownVideos('twinsoundz', [4], '4:3')],
     mainVideo: 'https://www.instagram.com/reel/Dd9gaIWTs9J/',
     reels: [
       'https://www.instagram.com/reel/DdcPeAZyzha/',

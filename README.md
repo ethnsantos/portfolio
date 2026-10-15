@@ -16,21 +16,10 @@ Everything lives in **`src/data/projects.ts`**. Copy an entry, paste it where yo
 want it in the list, change the fields. Order in the file = order on the site
 and the "next project" chain. A page is created automatically at `/work/<slug>`.
 
-- `mainVideo` / `reels`: paste Instagram, TikTok, YouTube or Vimeo links. Each one
-  plays on the page inside a rounded card in the video's shape, with a
-  "watch on instagram ↗" link under it.
-  - **Instagram crop:** the embed is cropped to just the video. The header
-    (username / View profile) and everything under the video (likes, icons,
-    comment box, View more on Instagram) are cut off. If a strip of header shows
-    or the top of a video is cut, adjust `headerPx` in `INSTAGRAM_CROP`
-    (`src/data/videos.ts`).
-  - **Shape:** reels and TikToks default to 9:16, Instagram `/p/` posts to 4:5,
-    YouTube/Vimeo to 16:9. If a post is a different shape, write it as an object:
-    `{ url: 'https://www.instagram.com/reel/ABC123/', ratio: '16:9' }`.
-  - **Still:** shown while the embed loads (or if it can't). A card uses
-    `public/projects/<slug>/stills/<post-id>.webp` if it exists (the post id is the
-    code in the link, e.g. `ABC123`), otherwise the project's hero still. To use a
-    different file: `{ url: '…', still: '/path/to/frame.webp' }`.
+- `mainVideo` / `reels`: paste Instagram or TikTok post links
+  (`instagram.com/reel/…`, `tiktok.com/@ethnsantos/video/…`). YouTube and Vimeo
+  work for `mainVideo` too. Short `vm.tiktok.com` links won't embed — open them
+  in a browser and copy the full URL.
 - Media goes in `public/projects/<slug>/`:
   - `thumb.webp` — card still, 16:10, 960×600 → `thumbnail`
   - `card.mp4` — small 16:10 loop for the card (plays on hover / in view) → `cardVideo`

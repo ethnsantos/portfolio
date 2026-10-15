@@ -1,0 +1,53 @@
+---
+// Lays out video cards in tidy rows: every card in a row is the same height
+// and its width follows its shape. Rows wrap on smaller screens.
+// layout="single" centers one large card (the main video).
+interface Props {
+  layout?: 'rows' | 'single';
+}
+const { layout = 'rows' } = Astro.props;
+---
+
+<div class:list={['videos', layout]}>
+  <slot />
+</div>
+
+<style>
+  .videos.rows {
+    /* target row height; cards grow from here in proportion to their shape */
+    --h: 340px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(20px, 2.5vw, 28px) clamp(12px, 1.6vw, 18px);
+  }
+  .videos.rows > :global(.vcard) {
+    flex: var(--ratio) 1 calc(var(--ratio) * var(--h));
+    max-width: 100%;
+  }
+  /* keeps the last row at the target height instead of stretching it */
+  .videos.rows::after {
+    content: '';
+    flex: 999 1 0;
+  }
+  .videos.single {
+    --h: min(72vh, 640px);
+    display: flex;
+    justify-content: center;
+  }
+  .videos.single > :global(.vcard) {
+    width: min(100%, calc(var(--ratio) * var(--h)));
+  }
+  @media (max-width: 900px) {
+    .videos.rows {
+      --h: 300px;
+    }
+  }
+  @media (max-width: 560px) {
+    .videos.rows {
+      --h: 250px;
+    }
+    .videos.single {
+      --h: min(68vh, 560px);
+    }
+  }
+</style>

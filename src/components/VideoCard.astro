@@ -1,0 +1,177 @@
+---
+// A playable video post in its real shape, with rounded corners and a
+// "watch on …" link underneath. Instagram embeds are cropped down to just the
+// video (see INSTAGRAM_CROP in videos.ts). The still sits underneath and shows
+// while the embed loads, or if it can't load.
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { videoInfo, INSTAGRAM_CROP, type Video } from '../data/videos';
+
+interface Props {
+  video: Video;
+  /** For screen readers, e.g. "Insta360 — video 2". */
+  title: string;
+  /** Folder holding auto-named stills: <stillDir>/<post-id>.webp */
+  stillDir: string;
+  /** Used when there's no still for this post. */
+  fallbackStill?: string;
+  tint: string;
+}
+const { video, title, stillDir, fallbackStill, tint } = Astro.props;
+const info = videoInfo(video);
+
+const auto = info.id ? `${stillDir}/${info.id}.webp` : undefined;
+const still =
+  info.still ?? (auto && existsSync(join(process.cwd(), 'public', auto)) ? auto : undefined) ?? fallbackStill;
+const platform = info.platform === 'link' ? '' : `${info.platform[0].toUpperCase()}${info.platform.slice(1)}`;
+
+const crop = info.platform === 'instagram';
+const { baseWidth, headerPx, sidePx } = INSTAGRAM_CROP;
+// Tall enough that Instagram never scrolls inside the frame; the extra is cropped away.
+const igHeight = Math.ceil(headerPx + (baseWidth - 2 * sidePx) / info.ratio + 480);
+const igStyle = `width:${baseWidth}px;height:${igHeight}px;--side:${sidePx}px;--header:${headerPx}px`;
+---
+
+<div class="vcard" style={`--ratio:${info.ratio}`}>
+  <div
+    class:list={['frame', { ig: crop }]}
+    style={`aspect-ratio:${info.ratio};--tint:${tint}`}
+    data-base={crop ? baseWidth - 2 * sidePx : undefined}
+  >
+    {still && <img class="still" src={still} alt="" loading="lazy" decoding="async" />}
+    {
+      info.embed ? (
+        <iframe
+          src={info.embed}
+          title={`${title}${platform ? ` — ${platform} video` : ''}`}
+          loading="lazy"
+          scrolling="no"
+          allow="autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write"
+          allowfullscreen
+          referrerpolicy="strict-origin-when-cross-origin"
+          style={crop ? igStyle : undefined}
+        />
+      ) : (
+        <a class="fallback" href={info.url} target="_blank" rel="noopener" aria-label={`Watch ${title}`}>
+          <span class="play" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"></path></svg>
+          </span>
+        </a>
+      )
+    }
+  </div>
+  <a class="label mono" href={info.url} target="_blank" rel="noopener">
+    {info.label}<span class="sr-only"> ({title}, opens in a new tab)</span>
+  </a>
+</div>
+
+<script>
+  // Scale each cropped Instagram embed to its card, and fade embeds in once loaded
+  // so the still shows instead of a white box while Instagram loads.
+  const frames = document.querySelectorAll<HTMLElement>('.vcard .frame');
+  const ro = new ResizeObserver((entries) => {
+    for (const { target, contentRect } of entries) {
+      const frame = target as HTMLElement;
+      // Exact (sub-pixel) width plus a hair of bleed past the right/bottom edges,
+      // so rounding never shows a sliver of border or footer.
+      const s = (contentRect.width / Number(frame.dataset.base)) * 1.005;
+      frame.style.setProperty('--s', String(s));
+      frame.classList.add('sized');
+    }
+  });
+  frames.forEach((frame) => {
+    if (frame.dataset.base) ro.observe(frame);
+    frame.querySelector('iframe')?.addEventListener('load', () => frame.classList.add('loaded'), { once: true });
+  });
+</script>
+
+<style>
+  .vcard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+  .frame {
+    position: relative;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius);
+    /* clip-path makes Safari clip the iframe to the rounded corners too */
+    clip-path: inset(0 round var(--radius));
+    isolation: isolate;
+    background:
+      radial-gradient(120% 90% at 20% 0%, color-mix(in srgb, var(--tint) 100%, white 8%), transparent 70%),
+      linear-gradient(170deg, var(--tint), #141816);
+  }
+  .still {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .frame:global(.loaded) iframe {
+    opacity: 1;
+  }
+  /* Instagram: render at a fixed width, scale to the card, shift the header off the top */
+  .ig iframe {
+    inset: 0 auto auto 0;
+    max-width: none;
+    transform-origin: 0 0;
+    transform: scale(var(--s, 1)) translate(calc(-1 * var(--side)), calc(-1 * var(--header)));
+  }
+  .ig:not(:global(.sized)) iframe {
+    visibility: hidden;
+  }
+  .fallback {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+  .play {
+    display: grid;
+    place-items: center;
+    width: clamp(44px, 18%, 56px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--cream);
+    transition: background 0.2s;
+  }
+  .play svg {
+    width: 40%;
+    margin-left: 8%;
+    fill: var(--accent);
+  }
+  .fallback:hover .play {
+    background: var(--accent);
+  }
+  .fallback:hover .play svg {
+    fill: var(--cream);
+  }
+  .label {
+    align-self: flex-start;
+    padding-block: 4px;
+    font-size: 10px;
+    color: var(--cream-dim);
+    text-transform: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .label:hover,
+  .label:focus-visible {
+    color: var(--accent);
+  }
+</style>

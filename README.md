@@ -16,10 +16,16 @@ Everything lives in **`src/data/projects.ts`**. Copy an entry, paste it where yo
 want it in the list, change the fields. Order in the file = order on the site
 and the "next project" chain. A page is created automatically at `/work/<slug>`.
 
-- `mainVideo` / `reels`: paste Instagram or TikTok post links
-  (`instagram.com/reel/…`, `tiktok.com/@ethnsantos/video/…`). YouTube and Vimeo
-  work for `mainVideo` too. Short `vm.tiktok.com` links won't embed — open them
-  in a browser and copy the full URL.
+- `mainVideo` / `reels`: paste Instagram, TikTok, YouTube or Vimeo links. Each one
+  shows as a video card (still + play icon + "watch on instagram ↗") that opens the
+  post in a new tab — no embeds.
+  - **Shape:** reels and TikToks default to 9:16, Instagram `/p/` posts to 4:5,
+    YouTube/Vimeo to 16:9. If a post is a different shape, write it as an object:
+    `{ url: 'https://www.instagram.com/reel/ABC123/', ratio: '16:9' }`.
+  - **Still:** a card uses `public/projects/<slug>/stills/<post-id>.webp` if it exists
+    (the post id is the code in the link, e.g. `ABC123`), otherwise the project's hero
+    still. To use a different file: `{ url: '…', still: '/path/to/frame.webp' }`.
+    Instagram doesn't allow downloading stills automatically, so these are saved by hand.
 - Media goes in `public/projects/<slug>/`:
   - `thumb.webp` — card still, 16:10, 960×600 → `thumbnail`
   - `card.mp4` — small 16:10 loop for the card (plays on hover / in view) → `cardVideo`

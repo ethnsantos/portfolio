@@ -1,0 +1,125 @@
+---
+// A video post shown as a still in its real shape, with a play icon and a
+// "watch on …" label. Opens the post in a new tab — no embeds, no branding.
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { videoInfo, type Video } from '../data/videos';
+
+interface Props {
+  video: Video;
+  /** For screen readers, e.g. "Insta360 — video 2". */
+  title: string;
+  /** Folder holding auto-named stills: <stillDir>/<post-id>.webp */
+  stillDir: string;
+  /** Used when there's no still for this post. */
+  fallbackStill?: string;
+  tint: string;
+}
+const { video, title, stillDir, fallbackStill, tint } = Astro.props;
+const info = videoInfo(video);
+
+const auto = info.id ? `${stillDir}/${info.id}.webp` : undefined;
+const still =
+  info.still ?? (auto && existsSync(join(process.cwd(), 'public', auto)) ? auto : undefined) ?? fallbackStill;
+const platform = info.platform === 'link' ? '' : ` on ${info.platform[0].toUpperCase()}${info.platform.slice(1)}`;
+---
+
+<a
+  class="vcard"
+  href={info.url}
+  target="_blank"
+  rel="noopener"
+  style={`--ratio:${info.ratio}`}
+  aria-label={`Watch ${title}${platform} (opens in a new tab)`}
+>
+  <span class="frame" style={`aspect-ratio:${info.ratio};--tint:${tint}`}>
+    {still && <img src={still} alt="" loading="lazy" decoding="async" />}
+    <span class="play" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"></path></svg>
+    </span>
+  </span>
+  <span class="label mono" aria-hidden="true">{info.label}</span>
+</a>
+
+<style>
+  .vcard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+  .frame {
+    position: relative;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius);
+    border: 1px solid rgba(242, 237, 228, 0.08);
+    background:
+      radial-gradient(120% 90% at 20% 0%, color-mix(in srgb, var(--tint) 100%, white 8%), transparent 70%),
+      linear-gradient(170deg, var(--tint), #141816);
+  }
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .frame::after {
+    /* soft shade so the play icon reads on bright frames */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.28), transparent 55%);
+    pointer-events: none;
+  }
+  .play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: clamp(44px, 18%, 56px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--cream);
+    translate: -50% -50%;
+    box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6);
+    transition:
+      background 0.2s,
+      scale 0.2s;
+  }
+  .play svg {
+    width: 40%;
+    margin-left: 8%;
+    fill: var(--accent);
+    transition: fill 0.2s;
+  }
+  .label {
+    font-size: 10px;
+    color: var(--cream-dim);
+    text-transform: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .vcard:hover img,
+  .vcard:focus-visible img {
+    transform: scale(1.03);
+  }
+  .vcard:hover .play,
+  .vcard:focus-visible .play {
+    background: var(--accent);
+    scale: 1.06;
+  }
+  .vcard:hover .play svg,
+  .vcard:focus-visible .play svg {
+    fill: var(--cream);
+  }
+  .vcard:hover .label,
+  .vcard:focus-visible .label {
+    color: var(--accent);
+  }
+</style>

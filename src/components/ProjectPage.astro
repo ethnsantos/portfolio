@@ -1,7 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import LoopVideo from './LoopVideo.astro';
-import SocialEmbed from './SocialEmbed.astro';
+import VideoCard from './VideoCard.astro';
+import VideoRow from './VideoRow.astro';
 import FilmStrip from './FilmStrip.astro';
 import { pad, type Project } from '../data/projects';
 import { site } from '../data/site';
@@ -18,6 +19,12 @@ const base = `/${kind}`;
 const next = list[(index + 1) % list.length];
 const groups = (project.videoGroups ?? []).filter((g) => g.videos.length > 0);
 const hasWatch = Boolean(project.mainVideo) || groups.length > 0;
+// Shared props for every video card on this page.
+const card = {
+  stillDir: `/projects/${kind === 'spec' ? 'spec-' : ''}${project.slug}/stills`,
+  fallbackStill: project.heroPoster ?? project.thumbnail,
+  tint: project.tint,
+};
 const details: [string, string][] = [
   ['Client', project.client],
   ['My role', project.role.join(' · ')],
@@ -89,9 +96,9 @@ const details: [string, string][] = [
     project.mainVideo && (
       <section id="watch" class="watch wrap" aria-label="Main video">
         <p class="label">./watch</p>
-        <div class:list={['main', { wide: !/instagram|tiktok|shorts/.test(project.mainVideo) }]}>
-          <SocialEmbed url={project.mainVideo} title={`${project.client} — ${project.title}`} />
-        </div>
+        <VideoRow layout="single">
+          <VideoCard video={project.mainVideo} title={`${project.client} — ${project.title}`} {...card} />
+        </VideoRow>
       </section>
     )
   }
@@ -102,11 +109,11 @@ const details: [string, string][] = [
         {groups.map((group) => (
           <div class="group">
             <p class="label">./{group.title}</p>
-            <div class="reel-row">
-              {group.videos.map((url, i) => (
-                <SocialEmbed url={url} title={`${group.title} — video ${i + 1}`} vertical />
+            <VideoRow>
+              {group.videos.map((video, i) => (
+                <VideoCard video={video} title={`${group.title} — video ${i + 1}`} {...card} />
               ))}
-            </div>
+            </VideoRow>
           </div>
         ))}
       </section>
@@ -115,13 +122,13 @@ const details: [string, string][] = [
 
   {
     project.reels.length > 0 && (
-      <section class="reels wrap" aria-label="More reels">
+      <section class="reels wrap" aria-label="More videos">
         <p class="label">./more-reels</p>
-        <div class="reel-row">
-          {project.reels.map((url, i) => (
-            <SocialEmbed url={url} title={`${project.client} reel ${i + 2}`} vertical />
+        <VideoRow>
+          {project.reels.map((video, i) => (
+            <VideoCard video={video} title={`${project.client} — video ${i + 2}`} {...card} />
           ))}
-        </div>
+        </VideoRow>
       </section>
     )
   }
@@ -272,38 +279,6 @@ const details: [string, string][] = [
   .group .label {
     margin: 0 0 16px;
   }
-  .main {
-    max-width: 420px;
-    margin-inline: auto;
-  }
-  .main.wide {
-    max-width: none;
-  }
-  .reel-row {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(12px, 2vw, 22px);
-  }
-  @media (max-width: 760px) {
-    /* swipeable row on phones */
-    .reel-row {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      margin-inline: calc(var(--gutter) * -1);
-      padding-inline: var(--gutter);
-      scroll-padding-inline: var(--gutter);
-      scrollbar-width: none;
-    }
-    .reel-row::-webkit-scrollbar {
-      display: none;
-    }
-    .reel-row > :global(*) {
-      flex: 0 0 72%;
-      scroll-snap-align: start;
-    }
-  }
-
   /* NEXT */
   .next {
     display: block;

@@ -8,6 +8,8 @@
 //  ffmpeg commands) and point heroVideo / heroPoster / cardVideo at them.
 // ─────────────────────────────────────────────────────────────
 
+import type { Video } from './videos';
+
 export interface Project {
   /** URL of the page: /work/<slug>. Lowercase, dashes, no spaces. */
   slug: string;
@@ -42,12 +44,12 @@ export interface Project {
   /** Background tint used while there's no image/video yet. */
   tint: string;
 
-  /** Main video: an Instagram, TikTok, YouTube or Vimeo link. */
-  mainVideo?: string;
-  /** More vertical reels: Instagram or TikTok links. Leave empty to hide the section. */
-  reels: string[];
+  /** Main video: an Instagram, TikTok, YouTube or Vimeo link — or { url, ratio, still } (see videos.ts). */
+  mainVideo?: Video;
+  /** More videos, shown as cards after the main one. Leave empty to hide the section. */
+  reels: Video[];
   /** Optional: videos grouped under headings (e.g. by artist) instead of one main video. */
-  videoGroups?: { title: string; videos: string[] }[];
+  videoGroups?: { title: string; videos: Video[] }[];
 }
 
 export const projects: Project[] = [

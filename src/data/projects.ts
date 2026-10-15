@@ -299,6 +299,23 @@ export const projects: Project[] = [
     mainVideo: 'https://www.instagram.com/reel/DY4a3RChjoN/',
     reels: [],
   },
+  {
+    slug: 'mr-poppy',
+    brand: 'mr. poppy hvac & electrical',
+    client: 'Mr. Poppy HVAC & Electrical',
+    title: 'Social Content & Ads',
+    summary: 'Social Content & Ads · Social media manager & videographer',
+    role: ['Social media manager', 'Videographer'],
+    deliverables: '3 Instagram reels',
+    year: '2026',
+    hook: 'Short-form content for an HVAC and electrical company.',
+    story: [],
+    // No clip yet: add thumbnail / heroVideo / heroPoster / cardVideo here
+    // (files in public/projects/mr-poppy/) and the card + hero switch over.
+    tint: '#33291f',
+    mainVideo: 'https://www.instagram.com/reel/DdC5oVFOZ1h/',
+    reels: ['https://www.instagram.com/reel/DdkWLPzSh0R/', 'https://www.instagram.com/reel/DdkpU-XzGsc/'],
+  },
 ];
 
 /** "01", "02", … */

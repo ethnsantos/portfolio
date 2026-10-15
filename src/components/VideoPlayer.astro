@@ -1,0 +1,338 @@
+---
+// The site's own video player: poster + big play button, then simple cream/orange
+// controls (play/pause, scrubber, time, mute, full screen). Plays with sound on
+// click; starting one video pauses any other. Nothing downloads until play.
+interface Props {
+  src: string;
+  poster: string;
+  /** Real shape of the video, e.g. "9:16". */
+  ratio: string;
+  title: string;
+}
+const { src, poster, ratio, title } = Astro.props;
+const [w, h] = ratio.split(':').map(Number);
+const r = w / h;
+
+const icons = {
+  play: 'M8 5.5v13l10.5-6.5z',
+  pause: 'M7 5h3.5v14H7zM13.5 5H17v14h-3.5z',
+  sound: 'M4 9.5h3.5L12 5.5v13l-4.5-4H4zM15 8.5a5 5 0 0 1 0 7M17.5 6a8.5 8.5 0 0 1 0 12',
+  muted: 'M4 9.5h3.5L12 5.5v13l-4.5-4H4zM15.5 9.5l5 5M20.5 9.5l-5 5',
+  full: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5',
+};
+---
+
+<figure class="vp" style={`--ratio:${r}`} data-state="idle">
+  <div class="screen" style={`aspect-ratio:${r}`}>
+    <video src={src} poster={poster} preload="none" playsinline aria-label={title}></video>
+    <button class="big" type="button" aria-label={`Play ${title}`}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icons.play}></path></svg>
+    </button>
+    <div class="bar">
+      <button class="ctl pp" type="button" aria-label="Pause">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path class="i-play" d={icons.play}></path><path class="i-pause" d={icons.pause}></path>
+        </svg>
+      </button>
+      <input class="seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek" />
+      <span class="time mono" aria-hidden="true">0:00</span>
+      <button class="ctl mute" type="button" aria-label="Mute">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path class="i-sound" d={icons.sound}></path><path class="i-muted" d={icons.muted}></path>
+        </svg>
+      </button>
+      <button class="ctl fs" type="button" aria-label="Full screen">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icons.full}></path></svg>
+      </button>
+    </div>
+  </div>
+</figure>
+
+<script>
+  const fmt = (t: number) => {
+    if (!isFinite(t)) return '0:00';
+    const s = Math.floor(t);
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  };
+  const players = [...document.querySelectorAll<HTMLElement>('.vp')];
+
+  players.forEach((vp) => {
+    const video = vp.querySelector('video')!;
+    const screen = vp.querySelector<HTMLElement>('.screen')!;
+    const big = vp.querySelector<HTMLButtonElement>('.big')!;
+    const pp = vp.querySelector<HTMLButtonElement>('.pp')!;
+    const seek = vp.querySelector<HTMLInputElement>('.seek')!;
+    const time = vp.querySelector<HTMLElement>('.time')!;
+    const mute = vp.querySelector<HTMLButtonElement>('.mute')!;
+    const fs = vp.querySelector<HTMLButtonElement>('.fs')!;
+    let hideTimer = 0;
+    let scrubbing = false;
+
+    const set = (state: string) => (vp.dataset.state = state);
+    const wake = () => {
+      vp.classList.add('awake');
+      clearTimeout(hideTimer);
+      if (!video.paused) hideTimer = window.setTimeout(() => vp.classList.remove('awake'), 2200);
+    };
+    const toggle = () => {
+      if (video.paused || video.ended) {
+        // Only one video at a time.
+        players.forEach((other) => other !== vp && other.querySelector('video')!.pause());
+        video.muted = false;
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    };
+
+    big.addEventListener('click', toggle);
+    pp.addEventListener('click', toggle);
+    video.addEventListener('click', () => {
+      // On touch screens the first tap shows the controls; on desktop it toggles.
+      if (!vp.classList.contains('awake') && matchMedia('(hover: none)').matches) return wake();
+      toggle();
+    });
+    video.addEventListener('play', () => {
+      set('playing');
+      pp.setAttribute('aria-label', 'Pause');
+      wake();
+    });
+    video.addEventListener('pause', () => {
+      set(video.ended ? 'ended' : 'paused');
+      pp.setAttribute('aria-label', 'Play');
+      wake();
+    });
+    video.addEventListener('ended', () => set('ended'));
+    video.addEventListener('timeupdate', () => {
+      if (!scrubbing && video.duration) seek.value = String((video.currentTime / video.duration) * 1000);
+      seek.style.setProperty('--p', `${Number(seek.value) / 10}%`);
+      time.textContent = fmt(video.currentTime);
+    });
+
+    seek.addEventListener('input', () => {
+      scrubbing = true;
+      if (video.duration) video.currentTime = (Number(seek.value) / 1000) * video.duration;
+      seek.style.setProperty('--p', `${Number(seek.value) / 10}%`);
+      wake();
+    });
+    seek.addEventListener('change', () => (scrubbing = false));
+
+    mute.addEventListener('click', () => {
+      video.muted = !video.muted;
+      vp.classList.toggle('is-muted', video.muted);
+      mute.setAttribute('aria-label', video.muted ? 'Unmute' : 'Mute');
+    });
+
+    fs.addEventListener('click', () => {
+      const v = video as HTMLVideoElement & { webkitEnterFullscreen?: () => void };
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (screen.requestFullscreen) screen.requestFullscreen().catch(() => v.webkitEnterFullscreen?.());
+      else v.webkitEnterFullscreen?.(); // iPhone Safari
+    });
+
+    screen.addEventListener('pointermove', wake);
+    screen.addEventListener('focusin', wake);
+  });
+</script>
+
+<style>
+  .vp {
+    margin: 0;
+    min-width: 0;
+  }
+  .screen {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: #0b0f0d;
+    container-type: inline-size;
+  }
+  .screen:fullscreen {
+    border-radius: 0;
+    aspect-ratio: auto !important;
+  }
+  video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    cursor: pointer;
+  }
+
+  /* big play button (before first play, when paused, at the end) */
+  .big {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    display: grid;
+    place-items: center;
+    width: clamp(48px, 22cqw, 68px);
+    height: clamp(48px, 22cqw, 68px);
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--cream);
+    box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition:
+      background 0.2s,
+      scale 0.2s,
+      opacity 0.2s;
+  }
+  .big svg {
+    width: 40%;
+    margin-left: 8%;
+    fill: var(--accent);
+    transition: fill 0.2s;
+  }
+  .big:hover,
+  .big:focus-visible {
+    background: var(--accent);
+    scale: 1.06;
+  }
+  .big:hover svg,
+  .big:focus-visible svg {
+    fill: var(--cream);
+  }
+  .vp[data-state='playing'] .big {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* control bar */
+  .bar {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    align-items: center;
+    gap: clamp(2px, 2cqw, 8px);
+    padding: 22px clamp(6px, 3cqw, 12px) clamp(6px, 3cqw, 10px);
+    background: linear-gradient(to top, rgba(8, 12, 10, 0.85), transparent);
+    opacity: 0;
+    transition: opacity 0.25s;
+    pointer-events: none;
+  }
+  .vp:not([data-state='idle']) .bar {
+    pointer-events: auto;
+  }
+  .vp[data-state='paused'] .bar,
+  .vp[data-state='ended'] .bar,
+  .vp.awake:not([data-state='idle']) .bar {
+    opacity: 1;
+  }
+  .ctl {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+  }
+  .ctl svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--cream);
+    stroke: var(--cream);
+    stroke-width: 0;
+    transition:
+      fill 0.2s,
+      stroke 0.2s;
+  }
+  .mute svg,
+  .fs svg {
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .mute svg path:first-child {
+    fill: var(--cream);
+  }
+  .ctl:hover svg,
+  .ctl:focus-visible svg {
+    fill: var(--accent);
+    stroke: var(--accent);
+  }
+  .mute:hover svg,
+  .mute:focus-visible svg,
+  .fs:hover svg,
+  .fs:focus-visible svg {
+    fill: none;
+  }
+  .mute:hover svg path:first-child {
+    fill: var(--accent);
+  }
+  .i-pause,
+  .i-muted {
+    display: none;
+  }
+  .vp[data-state='playing'] .i-play,
+  .vp.is-muted .i-sound {
+    display: none;
+  }
+  .vp[data-state='playing'] .i-pause,
+  .vp.is-muted .i-muted {
+    display: inline;
+  }
+
+  .seek {
+    --p: 0%;
+    flex: 1;
+    min-width: 0;
+    height: 20px;
+    margin: 0;
+    background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+  .seek::-webkit-slider-runnable-track {
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(to right, var(--accent) var(--p), rgba(242, 237, 228, 0.35) var(--p));
+  }
+  .seek::-moz-range-track {
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(to right, var(--accent) var(--p), rgba(242, 237, 228, 0.35) var(--p));
+  }
+  .seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    margin-top: -4.5px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--cream);
+  }
+  .seek::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--cream);
+  }
+  .time {
+    flex: none;
+    min-width: 3.2em;
+    font-size: 10px;
+    color: var(--cream);
+    text-align: right;
+  }
+  /* small cards: drop the time readout, keep the essentials */
+  @container (max-width: 200px) {
+    .time {
+      display: none;
+    }
+    .ctl {
+      width: 28px;
+      height: 28px;
+    }
+  }
+</style>

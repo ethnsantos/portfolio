@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import LoopVideo from './LoopVideo.astro';
 import SocialEmbed from './SocialEmbed.astro';
+import VideoPlayer from './VideoPlayer.astro';
 import FilmStrip from './FilmStrip.astro';
 import { pad, type Project } from '../data/projects';
 import { site } from '../data/site';
@@ -17,7 +18,10 @@ const { project, index, list, kind } = Astro.props;
 const base = `/${kind}`;
 const next = list[(index + 1) % list.length];
 const groups = (project.videoGroups ?? []).filter((g) => g.videos.length > 0);
-const hasWatch = Boolean(project.mainVideo) || groups.length > 0;
+// Own video files (if any) replace the Instagram embeds on this page.
+const local = project.localVideos ?? [];
+const useLocal = local.length > 0;
+const hasWatch = useLocal || Boolean(project.mainVideo) || groups.length > 0;
 const details: [string, string][] = [
   ['Client', project.client],
   ['My role', project.role.join(' · ')],
@@ -86,7 +90,31 @@ const details: [string, string][] = [
   </section>
 
   {
-    project.mainVideo && (
+    useLocal && (
+      <section id="watch" class="watch wrap" aria-label="Main video">
+        <p class="label">./watch</p>
+        <div class="local-main">
+          <VideoPlayer {...local[0]} title={local[0].title ?? `${project.client} — video 1`} />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    local.length > 1 && (
+      <section class="reels wrap" aria-label="More videos">
+        <p class="label">./more-videos</p>
+        <div class="local-rows">
+          {local.slice(1).map((v, i) => (
+            <VideoPlayer {...v} title={v.title ?? `${project.client} — video ${i + 2}`} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    !useLocal && project.mainVideo && (
       <section id="watch" class="watch wrap" aria-label="Main video">
         <p class="label">./watch</p>
         <div class:list={['main', { wide: !/instagram|tiktok|shorts/.test(project.mainVideo) }]}>
@@ -97,7 +125,7 @@ const details: [string, string][] = [
   }
 
   {
-    groups.length > 0 && (
+    !useLocal && groups.length > 0 && (
       <section id={project.mainVideo ? undefined : 'watch'} class="groups wrap" aria-label="Videos">
         {groups.map((group) => (
           <div class="group">
@@ -114,7 +142,7 @@ const details: [string, string][] = [
   }
 
   {
-    project.reels.length > 0 && (
+    !useLocal && project.reels.length > 0 && (
       <section class="reels wrap" aria-label="More reels">
         <p class="label">./more-reels</p>
         <div class="reel-row">
@@ -301,6 +329,51 @@ const details: [string, string][] = [
     .reel-row > :global(*) {
       flex: 0 0 72%;
       scroll-snap-align: start;
+    }
+  }
+
+  /* OWN VIDEO FILES: main video centered; the rest in rows where every video in a
+     row is the same height and its width follows its shape */
+  .local-main {
+    --h: min(78vh, 720px);
+    display: flex;
+    justify-content: center;
+  }
+  .local-main > :global(.vp) {
+    width: min(100%, calc(var(--ratio) * var(--h)));
+  }
+  .local-rows {
+    --h: 420px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(16px, 2vw, 22px) clamp(10px, 1.6vw, 18px);
+  }
+  .local-rows > :global(.vp) {
+    flex: var(--ratio) 1 calc(var(--ratio) * var(--h));
+    max-width: 100%;
+  }
+  .local-rows::after {
+    /* keeps a short last row at the target height instead of stretching it */
+    content: '';
+    flex: 999 1 0;
+  }
+  @media (max-width: 900px) {
+    .local-rows {
+      --h: 340px;
+    }
+  }
+  @media (max-width: 560px) {
+    .local-main {
+      --h: min(70vh, 600px);
+    }
+    /* two vertical videos side by side on phones */
+    .local-rows {
+      --h: 300px;
+    }
+  }
+  @media (max-width: 360px) {
+    .local-rows {
+      --h: 240px;
     }
   }
 

@@ -306,15 +306,25 @@ export const projects: Project[] = [
     title: 'Social Content & Ads',
     summary: 'Social Content & Ads · Social media manager & videographer',
     role: ['Social media manager', 'Videographer'],
-    deliverables: '3 Instagram reels',
+    deliverables: '8 Instagram reels',
     year: '2026',
     hook: 'Short-form content for an HVAC and electrical company.',
     story: [],
-    // No clip yet: add thumbnail / heroVideo / heroPoster / cardVideo here
-    // (files in public/projects/mr-poppy/) and the card + hero switch over.
+    thumbnail: '/projects/mr-poppy/thumb.webp',
+    heroVideo: '/projects/mr-poppy/hero.mp4',
+    heroPoster: '/projects/mr-poppy/hero.webp',
+    cardVideo: '/projects/mr-poppy/card.mp4',
     tint: '#33291f',
     mainVideo: 'https://www.instagram.com/reel/DdC5oVFOZ1h/',
-    reels: ['https://www.instagram.com/reel/DdkWLPzSh0R/', 'https://www.instagram.com/reel/DdkpU-XzGsc/'],
+    reels: [
+      'https://www.instagram.com/reel/DdkWLPzSh0R/',
+      'https://www.instagram.com/reel/DdkpU-XzGsc/',
+      'https://www.instagram.com/reel/Ddaa3ADtlBr/',
+      'https://www.instagram.com/reel/DdXeiWCBtv5/',
+      'https://www.instagram.com/reel/DdW7fnqSFqq/',
+      'https://www.instagram.com/reel/DdUVO4-Pxjk/',
+      'https://www.instagram.com/reel/DdR5k4XBhg3/',
+    ],
   },
 ];
 

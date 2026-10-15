@@ -149,6 +149,8 @@ export const projects: Project[] = [
     heroPoster: '/projects/skincare-junkie/hero.webp',
     cardVideo: '/projects/skincare-junkie/card.mp4',
     tint: '#3a3322',
+    // Own video files in the site's player. Remove to go back to the Instagram embeds below.
+    localVideos: ownVideos('skincare-junkie', [1]),
     mainVideo: 'https://www.instagram.com/p/DeNMlMou0D5/',
     reels: [],
   },
@@ -168,6 +170,8 @@ export const projects: Project[] = [
     heroPoster: '/projects/sashatattoo-essential/hero.webp',
     cardVideo: '/projects/sashatattoo-essential/card.mp4',
     tint: '#33262a',
+    // Own video files in the site's player. Remove to go back to the Instagram embeds below.
+    localVideos: ownVideos('sashatattoo-essential', [1, 2, 3, 4]),
     mainVideo: 'https://www.instagram.com/reel/Dc_qSiVy8iW/',
     reels: [
       'https://www.instagram.com/reel/DcSIeg1S0-6/',

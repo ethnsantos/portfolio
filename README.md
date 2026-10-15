@@ -38,6 +38,10 @@ and the "next project" chain. A page is created automatically at `/work/<slug>`.
 - `videoGroups` shows videos under headings instead of one main video, e.g. by
   artist: `videoGroups: [{ title: 'artist name', videos: ['https://…', '…'] }]`.
 - `credit` adds a small orange line under the details, e.g. who edited it.
+- `localVideos` (test, Mr. Poppy only): your own video files played in the site's
+  player instead of Instagram embeds — `{ src, poster, ratio: '9:16' }`, first one is
+  the main video. Files go in `public/projects/<slug>/videos/`. Compress with
+  `ffmpeg -i in.mov -vf scale=720:-2 -c:v libx264 -preset slow -crf 26 -pix_fmt yuv420p -c:a aac -b:a 128k -movflags +faststart out.mp4`.
 
 ## Spec work
 

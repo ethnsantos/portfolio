@@ -46,6 +46,12 @@ export interface Project {
   mainVideo?: string;
   /** More vertical reels: Instagram or TikTok links. Leave empty to hide the section. */
   reels: string[];
+  /**
+   * Optional: your own video files, played in the site's player instead of the
+   * Instagram embeds (mainVideo / reels / videoGroups aren't shown while this is set).
+   * First one is the main video. `ratio` is the video's real shape, e.g. '9:16'.
+   */
+  localVideos?: { src: string; poster: string; ratio: string; title?: string }[];
   /** Optional: videos grouped under headings (e.g. by artist) instead of one main video. */
   videoGroups?: { title: string; videos: string[] }[];
 }
@@ -315,6 +321,13 @@ export const projects: Project[] = [
     heroPoster: '/projects/mr-poppy/hero.webp',
     cardVideo: '/projects/mr-poppy/card.mp4',
     tint: '#33291f',
+    // TEST: own video files in the site's player. Remove this list to go back to
+    // the Instagram embeds below.
+    localVideos: [1, 2, 3, 5, 6].map((n) => ({
+      src: `/projects/mr-poppy/videos/mr-poppy-${n}.mp4`,
+      poster: `/projects/mr-poppy/videos/mr-poppy-${n}.webp`,
+      ratio: '9:16',
+    })),
     mainVideo: 'https://www.instagram.com/reel/DdC5oVFOZ1h/',
     reels: [
       'https://www.instagram.com/reel/DdkWLPzSh0R/',

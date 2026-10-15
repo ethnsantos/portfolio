@@ -56,6 +56,17 @@ export interface Project {
   videoGroups?: { title: string; videos: string[] }[];
 }
 
+/**
+ * Your own video files for `localVideos`: public/projects/<slug>/videos/<slug>-<n>.mp4,
+ * each with a <slug>-<n>.webp poster. List the numbers in display order.
+ */
+const ownVideos = (slug: string, numbers: number[], ratio = '9:16') =>
+  numbers.map((n) => ({
+    src: `/projects/${slug}/videos/${slug}-${n}.mp4`,
+    poster: `/projects/${slug}/videos/${slug}-${n}.webp`,
+    ratio,
+  }));
+
 export const projects: Project[] = [
   {
     slug: 'insta360',
@@ -98,6 +109,8 @@ export const projects: Project[] = [
     heroPoster: '/projects/spunge/hero.webp',
     cardVideo: '/projects/spunge/card.mp4',
     tint: '#3a2a22',
+    // Own video files in the site's player. Remove to go back to the Instagram embed below.
+    localVideos: ownVideos('spunge', [1, 3, 4, 6]),
     mainVideo: 'https://www.instagram.com/reel/DcosRz9y8LQ/',
     reels: [],
   },
@@ -136,6 +149,8 @@ export const projects: Project[] = [
     heroPoster: '/projects/skincare-junkie/hero.webp',
     cardVideo: '/projects/skincare-junkie/card.mp4',
     tint: '#3a3322',
+    // Own video files in the site's player. Remove to go back to the Instagram embeds below.
+    localVideos: ownVideos('skincare-junkie', [1]),
     mainVideo: 'https://www.instagram.com/p/DeNMlMou0D5/',
     reels: [],
   },
@@ -155,6 +170,8 @@ export const projects: Project[] = [
     heroPoster: '/projects/sashatattoo-essential/hero.webp',
     cardVideo: '/projects/sashatattoo-essential/card.mp4',
     tint: '#33262a',
+    // Own video files in the site's player. Remove to go back to the Instagram embeds below.
+    localVideos: ownVideos('sashatattoo-essential', [1, 2, 3, 4, 5]),
     mainVideo: 'https://www.instagram.com/reel/Dc_qSiVy8iW/',
     reels: [
       'https://www.instagram.com/reel/DcSIeg1S0-6/',
@@ -198,6 +215,9 @@ export const projects: Project[] = [
     heroPoster: '/projects/twinsoundz/hero.webp',
     cardVideo: '/projects/twinsoundz/card.mp4',
     tint: '#1f3330',
+    // Own video files in the site's player. Remove to go back to the Instagram embeds below.
+    // #4 is landscape (4:3); the rest are vertical.
+    localVideos: [...ownVideos('twinsoundz', [1, 2, 3]), ...ownVideos('twinsoundz', [4], '4:3')],
     mainVideo: 'https://www.instagram.com/reel/Dd9gaIWTs9J/',
     reels: [
       'https://www.instagram.com/reel/DdcPeAZyzha/',
@@ -321,13 +341,8 @@ export const projects: Project[] = [
     heroPoster: '/projects/mr-poppy/hero.webp',
     cardVideo: '/projects/mr-poppy/card.mp4',
     tint: '#33291f',
-    // TEST: own video files in the site's player. Remove this list to go back to
-    // the Instagram embeds below.
-    localVideos: [1, 2, 3, 5, 6].map((n) => ({
-      src: `/projects/mr-poppy/videos/mr-poppy-${n}.mp4`,
-      poster: `/projects/mr-poppy/videos/mr-poppy-${n}.webp`,
-      ratio: '9:16',
-    })),
+    // Own video files in the site's player. Remove to go back to the Instagram embeds below.
+    localVideos: ownVideos('mr-poppy', [1, 2, 3, 5, 6]),
     mainVideo: 'https://www.instagram.com/reel/DdC5oVFOZ1h/',
     reels: [
       'https://www.instagram.com/reel/DdkWLPzSh0R/',

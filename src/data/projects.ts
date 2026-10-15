@@ -354,6 +354,25 @@ export const projects: Project[] = [
       'https://www.instagram.com/reel/DdR5k4XBhg3/',
     ],
   },
+  {
+    slug: 'rc-avenue',
+    brand: 'rc avenue',
+    client: 'RC Avenue',
+    title: 'Live at Brick & Mortar',
+    summary: 'Live at Brick & Mortar · Videographer',
+    role: ['Videographer'],
+    deliverables: 'Live set coverage',
+    year: '2026',
+    hook: "Capturing RC Avenue's live set at Brick & Mortar Music Hall in SF, from the stage lights to the crowd.",
+    story: [],
+    thumbnail: '/projects/rc-avenue/thumb.webp',
+    heroVideo: '/projects/rc-avenue/hero.mp4',
+    heroPoster: '/projects/rc-avenue/hero.webp',
+    cardVideo: '/projects/rc-avenue/card.mp4',
+    tint: '#3a1f1a',
+    // No videos yet: the watch section and play button stay hidden until one is added.
+    reels: [],
+  },
 ];
 
 /** "01", "02", … */

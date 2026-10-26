@@ -54,6 +54,11 @@ export interface Project {
   localVideos?: { src: string; poster: string; ratio: string; title?: string }[];
   /** Optional: videos grouped under headings (e.g. by artist) instead of one main video. */
   videoGroups?: { title: string; videos: string[] }[];
+  /**
+   * Optional: Instagram/TikTok links shown as embeds *after* your own video files.
+   * Use this to add newly posted reels to a page that uses `localVideos`.
+   */
+  extraReels?: string[];
 }
 
 /**
@@ -151,6 +156,8 @@ export const projects: Project[] = [
     tint: '#3a3322',
     // Own video files in the site's player. Remove to go back to the Instagram embeds below.
     localVideos: ownVideos('skincare-junkie', [1]),
+    // Newly posted reels, shown as Instagram embeds under the video above. Newest first.
+    extraReels: ['https://www.instagram.com/reel/DefHhmMA0vJ/'],
     mainVideo: 'https://www.instagram.com/p/DeNMlMou0D5/',
     reels: [],
   },

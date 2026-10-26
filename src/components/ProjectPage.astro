@@ -114,6 +114,19 @@ const details: [string, string][] = [
   }
 
   {
+    useLocal && (project.extraReels ?? []).length > 0 && (
+      <section class="reels wrap" aria-label="More reels">
+        <p class="label">./more-reels</p>
+        <div class="reel-row">
+          {project.extraReels!.map((url, i) => (
+            <SocialEmbed url={url} title={`${project.client} reel ${local.length + i + 1}`} vertical />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
     !useLocal && project.mainVideo && (
       <section id="watch" class="watch wrap" aria-label="Main video">
         <p class="label">./watch</p>

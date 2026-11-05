@@ -36,6 +36,7 @@ export const brandGroups: BrandGroup[] = [
       caption: 'on set',
     },
     brands: [
+      { name: 'Adobe', project: 'adobe' },
       { name: 'Insta360', project: 'insta360' },
       { name: 'SPUNGE', project: 'spunge' },
       { name: 'Skincare Junkie', project: 'skincare-junkie' },

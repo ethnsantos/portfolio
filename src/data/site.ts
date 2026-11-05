@@ -27,7 +27,8 @@ export const site = {
       "I'm a Bay Area cinematographer and content creator. I shoot cinematic short-form for brands, live shows and music artists, and I post the process along the way on TikTok and Instagram.",
       "Right now I'm looking to partner with brands on campaigns, launches and creative direction.",
     ],
-    featured: 'Featured in Content Magazine · 2025 Edition',
+    // Small pills under the about text, in this order.
+    badges: ['Adobe Partner', 'Featured in Content Magazine · 2025 Edition'],
   },
 };
 

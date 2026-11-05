@@ -380,6 +380,21 @@ export const projects: Project[] = [
     // No videos yet: the watch section and play button stay hidden until one is added.
     reels: [],
   },
+  {
+    slug: 'adobe',
+    brand: 'adobe',
+    client: 'Adobe',
+    title: 'Adobe Firefly',
+    summary: 'Adobe Firefly · Adobe Partner',
+    role: ['Adobe Partner', 'Content creator'],
+    deliverables: 'Firefly feature video',
+    year: '2026',
+    hook: 'Content featuring Adobe Firefly, made as an Adobe partner.',
+    story: [],
+    tint: '#3b1a1d',
+    // Video not posted yet: the watch section and play button stay hidden until one is added.
+    reels: [],
+  },
 ];
 
 /** "01", "02", … */

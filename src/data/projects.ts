@@ -391,6 +391,10 @@ export const projects: Project[] = [
     year: '2026',
     hook: 'Content featuring Adobe Firefly, made as an Adobe partner.',
     story: [],
+    thumbnail: '/projects/adobe/thumb.webp',
+    heroVideo: '/projects/adobe/hero.mp4',
+    heroPoster: '/projects/adobe/hero.webp',
+    cardVideo: '/projects/adobe/card.mp4',
     tint: '#3b1a1d',
     // Video not posted yet: the watch section and play button stay hidden until one is added.
     reels: [],

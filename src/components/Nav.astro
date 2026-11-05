@@ -6,28 +6,34 @@ interface Props {
   variant?: 'home' | 'project';
   backHref?: string;
   backLabel?: string;
+  current?: 'services';
 }
-const { variant = 'home', backHref = '/#work', backLabel = './work' } = Astro.props;
+const { variant = 'home', backHref = '/#work', backLabel = './work', current } = Astro.props;
+const servicesLink = { href: '/services', 'aria-current': current === 'services' ? 'page' : undefined };
 ---
 
 <header class:list={['nav', variant]}>
   <a href="/" class="logo mono" aria-label="Ethan Santos, home">
-    Ethan Santos <span class="rec"><span class="dot" aria-hidden="true"></span>REC</span>
+    Ethan Santos <span class="rec"><span class="dot" aria-hidden="true"></span><span class="rec-text">REC</span></span>
   </a>
   <nav aria-label="Main">
     {
       variant === 'home' ? (
         <>
           <a href="/#work">./work</a>
+          <a {...servicesLink}>./services</a>
           {specProjects.length > 0 && <a href="/spec">./spec</a>}
           <a href="/#brands" class="hide-sm">./brands</a>
           <a href="/#about" class="hide-sm">./about</a>
         </>
       ) : (
-        <a href={backHref}>← {backLabel}</a>
+        <>
+          <a href={backHref}>← {backLabel}</a>
+          <a {...servicesLink}>./services</a>
+        </>
       )
     }
-    <a href={bookingHref} class="cta">./book-a-shoot ↗</a>
+    <a href={bookingHref} class="cta" aria-label="Book a shoot">./book<span class="long">-a-shoot</span> ↗</a>
   </nav>
 </header>
 
@@ -90,8 +96,27 @@ const { variant = 'home', backHref = '/#work', backLabel = './work' } = Astro.pr
   .cta {
     color: var(--accent);
   }
+  nav a[aria-current='page'] {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
   @media (max-width: 560px) {
-    .hide-sm {
+    .hide-sm,
+    .long {
+      display: none;
+    }
+  }
+  @media (max-width: 360px) {
+    nav {
+      gap: 9px;
+      font-size: 10.5px;
+    }
+    .logo {
+      font-size: 10px;
+    }
+    /* keep the blinking dot, drop the letters on the narrowest phones */
+    .rec-text {
       display: none;
     }
   }

@@ -76,7 +76,16 @@ import { site, bookingHref } from '../data/site';
         <p class="label">./about</p>
         <h2>{site.about.heading}</h2>
         {site.about.paragraphs.map((p) => <p class="body">{p}</p>)}
-        <p class="pill mono"><span class="pill-dot" aria-hidden="true"></span>{site.about.featured}</p>
+        <ul class="pills">
+          {
+            site.about.badges.map((badge) => (
+              <li class="pill mono">
+                <span class="pill-dot" aria-hidden="true" />
+                {badge}
+              </li>
+            ))
+          }
+        </ul>
       </div>
     </div>
     <FilmStrip />
@@ -206,11 +215,18 @@ import { site, bookingHref } from '../data/site';
     font-size: clamp(14.5px, 1.6vw, 16px);
     color: var(--cream-dim);
   }
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
+  }
   .pill {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    margin: 24px 0 0;
     padding: 9px 16px;
     border: 1px solid var(--line);
     border-radius: 999px;
@@ -234,6 +250,9 @@ import { site, bookingHref } from '../data/site';
     }
     .body {
       margin-inline: auto;
+    }
+    .pills {
+      justify-content: center;
     }
   }
 

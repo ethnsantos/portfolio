@@ -54,6 +54,11 @@ While the list is empty, the `/spec` page, the `./spec` nav link and the
 
 Your name, tagline, about text, email and socials are in `src/data/site.ts`.
 
+The **Services** page (`/services`) is built from `src/data/services.ts`: every package,
+price, add-on and step is there. `featured: true` marks a card "Most Popular". The
+"Book a Call" / "Send an Inquiry" buttons are email links (`bookCallHref` / `inquiryHref`);
+swap in a booking or form URL there when you have one.
+
 The "who i've worked with" wall is in `src/data/brands.ts`. Add a name to a group
 (or a new group). Give it `project: '<slug>'` to link it to that project page, or
 `logo: '/brands/<file>.svg'` to show a logo instead of the name. Each group's pinned
